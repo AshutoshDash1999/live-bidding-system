@@ -16,3 +16,6 @@ Frontend: TypeScript + React + Vite
 
 4. Go to the directory and install all the dependency
 `npm i`
+
+5. Run the server
+`npm run dev`
