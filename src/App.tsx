@@ -7,6 +7,7 @@ import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import Registration from "./pages/Registration/Registration";
 import PageNotFound from "./pages/PageNotFound/PageNotFound";
+import ProductPage from "./pages/ProductPage/ProductPage";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/registration" element={<Registration />} />
           <Route path="/home" element={<BidderHome />} />
+          <Route path="/product/:productID" element={<ProductPage />} />
+
         </Routes>
       </BrowserRouter>
     </div>
