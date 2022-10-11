@@ -9,12 +9,16 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  List,
+  ListIcon,
+  ListItem,
   Spacer,
   Text,
 } from "@chakra-ui/react";
 import React from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import ProductImg from "../../assets/product-img.jpg";
+import { CheckIcon } from "@chakra-ui/icons";
 
 function ProductPage() {
   return (
@@ -58,10 +62,37 @@ function ProductPage() {
               </InputGroup>
             </Box>
           </HStack>
-          <Box p={4} my={4} background={"green.100"} borderRadius={"lg"} borderBottom='8px' borderColor={"green.400"}>
-          <Text fontSize="lg">
-                Your last bidded Price: ₹<span>45678</span>
-              </Text>
+          <Box
+            p={4}
+            my={4}
+            background={"green.100"}
+            borderRadius={"lg"}
+            borderBottom="8px"
+            borderColor={"green.400"}
+          >
+            <Text fontSize="lg">
+              Your last bidded Price: ₹<span>45678</span>
+            </Text>
+          </Box>
+          <Box>
+            <Heading fontSize="md">
+              Product Features
+            </Heading>
+            <List spacing={3}>
+              <ListItem>
+                <ListIcon as={CheckIcon} color="green.500" />
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit
+              </ListItem>
+              <ListItem>
+                <ListIcon as={CheckIcon} color="green.500" />
+                Assumenda, quia temporibus eveniet a libero incidunt suscipit
+              </ListItem>
+              <ListItem>
+                <ListIcon as={CheckIcon} color="green.500" />
+                Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+              </ListItem>
+              {/* You can also use custom icons from react-icons */}
+            </List>
           </Box>
         </Box>
         <Spacer />
