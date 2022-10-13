@@ -9,6 +9,8 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Radio,
+  RadioGroup,
   Stack,
 } from "@chakra-ui/react";
 import React from "react";
@@ -19,6 +21,15 @@ function Registration() {
       <Flex alignItems="center" justifyContent="center" height="100vh">
         <Box width="30%">
           <Stack spacing={3}>
+            <FormControl isRequired>
+              <RadioGroup defaultValue='bidder'>
+                <Stack direction={"row"}>
+                  <FormLabel>Choose your role:</FormLabel>
+                  <Radio value="bidder">Bidder</Radio>
+                  <Radio value="seller">Seller</Radio>
+                </Stack>
+              </RadioGroup>
+            </FormControl>
             <FormControl isRequired>
               <FormLabel>First name</FormLabel>
               <Input placeholder="Jane" />
@@ -56,8 +67,10 @@ function Registration() {
               <Input placeholder="18" />
             </FormControl>
             <Flex alignItems="center" justifyContent="space-between">
-              <Button width="10rem" colorScheme="blue">Reset</Button>
-              <Button width="10rem">Save</Button>
+              <Button width="10rem" >
+                Reset
+              </Button>
+              <Button width="10rem" colorScheme="blue">Save</Button>
             </Flex>
           </Stack>
         </Box>
