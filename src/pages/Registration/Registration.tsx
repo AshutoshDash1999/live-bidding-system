@@ -1,4 +1,4 @@
-import { AtSignIcon, PhoneIcon } from "@chakra-ui/icons";
+import { AtSignIcon, PhoneIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -13,21 +13,21 @@ import {
   RadioGroup,
   Stack,
   useToast,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
-import { db } from "../../utils/firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
+} from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { db } from '../../utils/firebaseConfig';
+import { collection, addDoc } from 'firebase/firestore';
 
 function Registration() {
   const toast = useToast();
   const [registerUserInfo, setRegisterUserInfo] = useState({
-    role: "bidder",
-    fname: "",
-    lname: "",
-    mobileNumber: "",
-    mailId: "",
-    bankAccountNo: "",
-    yearlyIncome: "",
+    role: 'bidder',
+    fname: '',
+    lname: '',
+    mobileNumber: '',
+    mailId: '',
+    bankAccountNo: '',
+    yearlyIncome: '',
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,7 +35,7 @@ function Registration() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const docRef = await addDoc(collection(db, "userData"), {
+      const docRef = await addDoc(collection(db, 'userData'), {
         role: registerUserInfo.role,
         firstName: registerUserInfo.fname,
         lastName: registerUserInfo.lname,
@@ -47,18 +47,18 @@ function Registration() {
       // console.log("Document written with ID: ", docRef.id);
       setIsLoading(false);
       toast({
-        title: "Your information is saved",
-        status: "success",
+        title: 'Your information is saved',
+        status: 'success',
         duration: 2000,
         isClosable: false,
       });
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error('Error adding document: ', e);
       setIsLoading(false);
       toast({
-        title: "Error adding document",
+        title: 'Error adding document',
         description: `${e}`,
-        status: "error",
+        status: 'error',
         duration: 2000,
         isClosable: false,
       });
@@ -66,6 +66,7 @@ function Registration() {
   }
 
   const handleInput = (event: any) => {
+    console.log(event.target);
     setRegisterUserInfo({
       ...registerUserInfo,
       [event.target.name]: event.target.value,
@@ -85,27 +86,36 @@ function Registration() {
   // };
   return (
     <Box>
-      <Flex alignItems="center" justifyContent="center" height="100vh">
-        <Box width="30%">
+      <Flex alignItems='center' justifyContent='center' height='100vh'>
+        <Box width='30%'>
           <Stack spacing={3}>
             <FormControl isRequired>
               <RadioGroup
-                name="role"
+                name='role'
                 value={registerUserInfo.role}
-                onChange={handleInput}
+                onChange={(value) =>
+                  setRegisterUserInfo({
+                    ...registerUserInfo,
+                    role: value,
+                  })
+                }
               >
-                <Stack direction={"row"}>
+                <Stack direction={'row'}>
                   <FormLabel>Choose your role:</FormLabel>
-                  <Radio value="bidder">Bidder</Radio>
-                  <Radio value="seller">Seller</Radio>
+                  <Radio name='role' id='bidder' value='bidder'>
+                    Bidder
+                  </Radio>
+                  <Radio name='role' id='seller' value='seller'>
+                    Seller
+                  </Radio>
                 </Stack>
               </RadioGroup>
             </FormControl>
             <FormControl isRequired>
               <FormLabel>First name</FormLabel>
               <Input
-                placeholder="Jane"
-                name="fname"
+                placeholder='Jane'
+                name='fname'
                 defaultValue={registerUserInfo.fname}
                 onChange={handleInput}
               />
@@ -113,8 +123,8 @@ function Registration() {
             <FormControl isRequired>
               <FormLabel>Last name</FormLabel>
               <Input
-                placeholder="Doe"
-                name="lname"
+                placeholder='Doe'
+                name='lname'
                 defaultValue={registerUserInfo.lname}
                 onChange={handleInput}
               />
@@ -123,13 +133,13 @@ function Registration() {
               <FormLabel>Mobile Number</FormLabel>
               <InputGroup>
                 <InputLeftElement
-                  pointerEvents="none"
-                  children={<PhoneIcon color="gray.300" />}
+                  pointerEvents='none'
+                  children={<PhoneIcon color='gray.300' />}
                 />
                 <Input
-                  type="tel"
-                  placeholder="Phone number"
-                  name="mobileNumber"
+                  type='tel'
+                  placeholder='Phone number'
+                  name='mobileNumber'
                   defaultValue={registerUserInfo.mobileNumber}
                   onChange={handleInput}
                 />
@@ -139,13 +149,13 @@ function Registration() {
               <FormLabel>Mail Id</FormLabel>
               <InputGroup>
                 <InputLeftElement
-                  pointerEvents="none"
-                  children={<AtSignIcon color="gray.300" />}
+                  pointerEvents='none'
+                  children={<AtSignIcon color='gray.300' />}
                 />
                 <Input
-                  type="email"
-                  name="mailId"
-                  placeholder="example@mail.com"
+                  type='email'
+                  name='mailId'
+                  placeholder='example@mail.com'
                   defaultValue={registerUserInfo.mailId}
                   onChange={handleInput}
                 />
@@ -154,8 +164,8 @@ function Registration() {
             <FormControl isRequired>
               <FormLabel>Bank Account Number</FormLabel>
               <Input
-                placeholder="xxx-xxx-xxx-xxx"
-                name="bankAccountNo"
+                placeholder='xxx-xxx-xxx-xxx'
+                name='bankAccountNo'
                 defaultValue={registerUserInfo.bankAccountNo}
                 onChange={handleInput}
               />
@@ -163,20 +173,20 @@ function Registration() {
             <FormControl isRequired>
               <FormLabel>Yearly Income</FormLabel>
               <Input
-                placeholder=""
-                name="yearlyIncome"
+                placeholder=''
+                name='yearlyIncome'
                 defaultValue={registerUserInfo.yearlyIncome}
                 onChange={handleInput}
               />
             </FormControl>
-            <Flex alignItems="center" justifyContent="space-between">
+            <Flex alignItems='center' justifyContent='space-between'>
               {/* <Button width="10rem" onClick={resetFormHandler}>Reset</Button> */}
               <Button
-                width="100%"
-                colorScheme="blue"
+                width='100%'
+                colorScheme='blue'
                 onClick={saveRegistrationInfo}
                 isLoading={isLoading}
-                loadingText="Saving"
+                loadingText='Saving'
               >
                 Save
               </Button>
