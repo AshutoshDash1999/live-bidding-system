@@ -73,6 +73,7 @@ function Login() {
           duration: 3000,
           isClosable: false,
         });
+        navigate('/home');
 
         // ...
       })
@@ -102,7 +103,7 @@ function Login() {
         });
         navigate('/home');
         // The signed-in user info.
-        const user = result.user;
+        // const user = result.user;
         // ...
       })
       .catch((error) => {
