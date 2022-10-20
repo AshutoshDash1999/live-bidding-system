@@ -14,13 +14,57 @@ import {
   ListItem,
   Spacer,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import ProductImg from "../../assets/product-img.jpg";
 import { CheckIcon } from "@chakra-ui/icons";
 
 function ProductPage() {
+  const toast = useToast();
+  const sellerPrice = 120000;
+  const [bidderPrice, setBidderPrice] = useState("");
+  const [newBidderPrice, setNewBidderPrice] = useState("");
+  const [lastBiddedPrice, setLastBiddedPrice] = useState("")
+  const priceUpdateHandler = () => {
+    setLastBiddedPrice(bidderPrice)
+    console.log(parseInt(newBidderPrice), parseInt(lastBiddedPrice));
+    
+    // if (parseInt(newBidderPrice) > parseInt(lastBiddedPrice)) {
+    //   toast({
+    //     title: "Bidding Price updated.",
+    //     status: "success",
+    //     duration: 2000,
+    //     isClosable: false,
+    //   });
+    // } else {
+    //   toast({
+    //     title: "Price Bidding error.",
+    //     description: "Please bid with price greater than previous price",
+    //     status: "error",
+    //     duration: 2000,
+    //     isClosable: false,
+    //   });
+    // }
+    // if (parseInt(newBidderPrice) > sellerPrice){
+    //   setBidderPrice(newBidderPrice as string);
+    //   toast({
+    //     title: 'Bidding Price updated.',
+    //     status: 'success',
+    //     duration: 2000,
+    //     isClosable: false,
+    //   })
+    // } else {
+    //   toast({
+    //     title: 'Price Bidding error.',
+    //     description: "Please bid with price greater than seller's price",
+    //     status: 'error',
+    //     duration: 2000,
+    //     isClosable: false,
+    //   })
+    // }
+  };
   return (
     <Box>
       <Navbar />
@@ -44,7 +88,8 @@ function ProductPage() {
             </Box>
             <Box>
               <Text fontSize="lg">
-                Auction Price: ₹<span>45678</span>
+                Auction Price: ₹
+                <span>{sellerPrice.toLocaleString("en-IN")}</span>
               </Text>
               <InputGroup size="lg">
                 <InputLeftElement
@@ -53,9 +98,14 @@ function ProductPage() {
                   fontSize="1.2em"
                   children="₹"
                 />
-                <Input size="lg" pr="4.5rem" placeholder="Bid your price" />
+                <Input
+                  onChange={(e) => setNewBidderPrice(e.target.value as string)}
+                  size="lg"
+                  pr="4.5rem"
+                  placeholder="Bid your price"
+                />
                 <InputRightElement width="4.5rem">
-                  <Button h="1.75rem" size="md">
+                  <Button h="1.75rem" size="md" onClick={priceUpdateHandler}>
                     Bid
                   </Button>
                 </InputRightElement>
@@ -71,13 +121,12 @@ function ProductPage() {
             borderColor={"green.400"}
           >
             <Text fontSize="lg">
-              Your last bidded Price: ₹<span>45678</span>
+              Your last bidded Price: ₹
+              <span>{bidderPrice.toLocaleString()}</span>
             </Text>
           </Box>
           <Box>
-            <Heading fontSize="md">
-              Product Features
-            </Heading>
+            <Heading fontSize="md">Product Features</Heading>
             <List spacing={3}>
               <ListItem>
                 <ListIcon as={CheckIcon} color="green.500" />
