@@ -24,47 +24,40 @@ import { CheckIcon } from "@chakra-ui/icons";
 function ProductPage() {
   const toast = useToast();
   const sellerPrice = 120000;
-  const [bidderPrice, setBidderPrice] = useState("");
-  const [newBidderPrice, setNewBidderPrice] = useState("");
-  const [lastBiddedPrice, setLastBiddedPrice] = useState("")
+  const [newBidderPrice, setNewBidderPrice] = useState("")
+  const [prevBiddedPrice, setPrevBiddedPrice] = useState(0)
+  
   const priceUpdateHandler = () => {
-    setLastBiddedPrice(bidderPrice)
-    console.log(parseInt(newBidderPrice), parseInt(lastBiddedPrice));
-    
-    // if (parseInt(newBidderPrice) > parseInt(lastBiddedPrice)) {
-    //   toast({
-    //     title: "Bidding Price updated.",
-    //     status: "success",
-    //     duration: 2000,
-    //     isClosable: false,
-    //   });
-    // } else {
-    //   toast({
-    //     title: "Price Bidding error.",
-    //     description: "Please bid with price greater than previous price",
-    //     status: "error",
-    //     duration: 2000,
-    //     isClosable: false,
-    //   });
-    // }
-    // if (parseInt(newBidderPrice) > sellerPrice){
-    //   setBidderPrice(newBidderPrice as string);
-    //   toast({
-    //     title: 'Bidding Price updated.',
-    //     status: 'success',
-    //     duration: 2000,
-    //     isClosable: false,
-    //   })
-    // } else {
-    //   toast({
-    //     title: 'Price Bidding error.',
-    //     description: "Please bid with price greater than seller's price",
-    //     status: 'error',
-    //     duration: 2000,
-    //     isClosable: false,
-    //   })
-    // }
+    if (parseInt(newBidderPrice)>sellerPrice){
+      if (parseInt(newBidderPrice)> prevBiddedPrice){
+        toast({
+          title: "Bidding successfull.",
+          status: "success",
+          duration: 2000,
+          isClosable: false,
+        });
+        setPrevBiddedPrice(parseInt(newBidderPrice))
+      } else {
+        toast({
+          title: "Bidding un-successfull.",
+          description:"Please bid higher than your last bidded price",
+          status: "error",
+          duration: 2000,
+          isClosable: false,
+        });
+      }
+    } else {
+      toast({
+        title: "Bidding un-successfull.",
+        description:"Please bid higher than base price",
+        status: "error",
+        duration: 2000,
+        isClosable: false,
+      });
+      
+    }
   };
+
   return (
     <Box>
       <Navbar />
@@ -105,7 +98,7 @@ function ProductPage() {
                   placeholder="Bid your price"
                 />
                 <InputRightElement width="4.5rem">
-                  <Button h="1.75rem" size="md" onClick={priceUpdateHandler}>
+                  <Button mr="0.5rem" h="2rem" size="lg" onClick={priceUpdateHandler}>
                     Bid
                   </Button>
                 </InputRightElement>
@@ -120,9 +113,9 @@ function ProductPage() {
             borderBottom="8px"
             borderColor={"green.400"}
           >
-            <Text fontSize="lg">
+            <Text fontSize="lg" >
               Your last bidded Price: ₹
-              <span>{bidderPrice.toLocaleString()}</span>
+              <span>{prevBiddedPrice.toLocaleString()}</span>
             </Text>
           </Box>
           <Box>
