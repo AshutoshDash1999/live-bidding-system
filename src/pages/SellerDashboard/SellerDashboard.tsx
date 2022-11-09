@@ -5,6 +5,7 @@ import {
   FormErrorMessage,
   FormHelperText,
   FormLabel,
+  Grid,
   Input,
   Modal,
   ModalBody,
@@ -35,9 +36,9 @@ function SellerDashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [itemInfo, setItemInfo] = useState({
     itemName: "",
-    itemBasePrice: "",
+    itemPrice: "",
     itemDesc: "",
-    auctionEndTime: "",
+    auctionTimeLeft: "",
     itemPhoto: "",
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -57,9 +58,9 @@ function SellerDashboard() {
     try {
       const docRef = await addDoc(collection(db, "itemData"), {
         itemName: itemInfo.itemName,
-        itemBasePrice: itemInfo.itemBasePrice,
+        itemBasePrice: itemInfo.itemPrice,
         itemDesc: itemInfo.itemDesc,
-        auctionEndTime: itemInfo.auctionEndTime,
+        auctionEndTime: itemInfo.auctionTimeLeft,
       });
       // console.log("Document written with ID: ", docRef.id);
       setIsLoading(false);
@@ -80,6 +81,7 @@ function SellerDashboard() {
         isClosable: false,
       });
     }
+    onClose();
   }
 
   useEffect(() => {
@@ -87,13 +89,15 @@ function SellerDashboard() {
     const unsub = onSnapshot(querySnap, (querySnapshot) => {
       let itemDataArray: any = [];
       querySnapshot.forEach((doc) => {
-        console.log(doc.data());
         itemDataArray.push(doc.data());
       });
       setItemDataCollection(itemDataArray);
     });
     return () => unsub();
   }, []);
+
+  console.log(itemDataCollection);
+  
 
   return (
     <Box>
@@ -103,11 +107,11 @@ function SellerDashboard() {
       </Box>
 
       <Box my={2} mx={6} borderRadius="md">
-        <Stack spacing={8} direction='row'>
-          {itemDataCollection.map((item) => (
-            <ItemCard />
+        <Grid templateColumns='repeat(5, 1fr)' gap={6}>
+          {itemDataCollection?.map((item) => (
+            <ItemCard {...item}/>
           ))}
-        </Stack>
+        </Grid>
       </Box>
 
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
@@ -129,8 +133,8 @@ function SellerDashboard() {
             <FormControl isRequired marginBottom={4}>
               <FormLabel>Item Base Price</FormLabel>
               <Input
-                name="itemBasePrice"
-                defaultValue={itemInfo.itemBasePrice}
+                name="itemPrice"
+                defaultValue={itemInfo.itemPrice}
                 onChange={handleInput}
               ></Input>
             </FormControl>
@@ -163,8 +167,8 @@ function SellerDashboard() {
                 placeholder="Select Date and Time"
                 size="md"
                 type="datetime-local"
-                name="auctionEndTime"
-                defaultValue={itemInfo.auctionEndTime}
+                name="auctionTimeLeft"
+                defaultValue={itemInfo.auctionTimeLeft}
                 onChange={handleInput}
               />
             </FormControl>

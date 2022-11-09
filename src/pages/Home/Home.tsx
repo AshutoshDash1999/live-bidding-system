@@ -1,9 +1,18 @@
 import React from 'react'
 import BidderHome from '../BidderHome/BidderHome'
 import SellerDashboard from '../SellerDashboard/SellerDashboard'
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { getFirestore, collection } from 'firebase/firestore';
 
 function Home() {
-    let role = "bidder"
+  // const [snapshot, loading, error] = useCollection(
+  //   collection(getFirestore(firebaseApp), 'hooks'),
+  //   {
+  //     snapshotListenOptions: { includeMetadataChanges: true },
+  //   }
+  // );
+
+    let role = "seller"  
   return (
     <div>
         {

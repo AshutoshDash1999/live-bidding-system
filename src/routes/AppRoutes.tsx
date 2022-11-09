@@ -16,12 +16,12 @@ const AppRoutes = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/newUserRegistration" element={<Registration />} />
+          <Route path="/product/:productID" element={<ProductPage />} />
 
         {/* protected routes */}
         <Route path="/" element={<PrivateRoute />}>
-          <Route path="/newUserRegistration" element={<Registration />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/product/:productID" element={<ProductPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
