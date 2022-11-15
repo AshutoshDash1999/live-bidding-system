@@ -3,8 +3,6 @@ import {
   Button,
   Center,
   FormControl,
-  FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Grid,
   Input,
@@ -25,7 +23,6 @@ import Navbar from "../../components/Navbar/Navbar";
 import { db } from "../../utils/firebaseConfig";
 import {
   collection,
-  addDoc,
   query,
   onSnapshot,
   doc,
@@ -168,7 +165,7 @@ function SellerDashboard() {
     <Box>
       <Navbar />
       <Box my={2} mx={6} borderRadius="md">
-        <Button onClick={onOpen}>Open Modal</Button>
+        <Button onClick={onOpen} colorScheme="teal">Publish a new item</Button>
       </Box>
 
       <Box my={2} mx={6} borderRadius="md">

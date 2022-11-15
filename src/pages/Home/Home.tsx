@@ -1,8 +1,5 @@
-import React from 'react'
-import BidderHome from '../BidderHome/BidderHome'
-import SellerDashboard from '../SellerDashboard/SellerDashboard'
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { getFirestore, collection } from 'firebase/firestore';
+import BidderHome from "../BidderHome/BidderHome";
+import SellerDashboard from "../SellerDashboard/SellerDashboard";
 
 function Home() {
   // const [snapshot, loading, error] = useCollection(
@@ -12,14 +9,10 @@ function Home() {
   //   }
   // );
 
-    let role = "seller"  
-  return (
-    <div>
-        {
-            role==="bidder"?<BidderHome/>:<SellerDashboard/>
-        }
-    </div>
-  )
+  
+
+  let role = "seller"; //change here
+  return <div>{role === "bidder" ? <BidderHome /> : <SellerDashboard />}</div>;
 }
 
-export default Home
+export default Home;

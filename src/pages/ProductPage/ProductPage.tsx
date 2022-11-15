@@ -27,7 +27,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import ProductImg from "../../assets/product-img.jpg";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
-import { doc, DocumentData, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../utils/firebaseConfig";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
