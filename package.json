@@ -13,14 +13,16 @@
     "@chakra-ui/react": "^2.3.4",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "dayjs": "^1.11.6",
     "dotenv": "^16.0.3",
     "firebase": "^9.12.1",
     "framer-motion": "^6.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.0.3",
-    "react-router-dom": "^6.4.1",
-    "react-scripts": "^5.0.1"
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "^5.0.1",
+    "react-uuid": "^2.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

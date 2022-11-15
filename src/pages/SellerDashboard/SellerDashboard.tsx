@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -14,22 +15,18 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Stack,
+  Spinner,
   Textarea,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import { db } from "../../utils/firebaseConfig";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, addDoc, query, onSnapshot } from "firebase/firestore";
 import ItemCard from "../../components/ItemCard/ItemCard";
+import uuid from "react-uuid";
+import { Link } from "react-router-dom";
 
 function SellerDashboard() {
   const toast = useToast();
@@ -39,10 +36,17 @@ function SellerDashboard() {
     itemPrice: "",
     itemDesc: "",
     auctionTimeLeft: "",
-    itemPhoto: "",
+    itemPhotoURL: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [itemDataCollection, setItemDataCollection] = useState([]);
+
+  const photoInputHandler = (event: any) => {
+    // setItemInfo({
+    //   ...itemInfo,
+    //   [event.target.name]: event.target.files[0],
+    // });
+  };
 
   const handleInput = (event: any) => {
     setItemInfo({
@@ -51,16 +55,45 @@ function SellerDashboard() {
     });
   };
 
+  const getImageURL = (event: any) => {
+    const imageFile = event.target.files[0];
+
+    if (!imageFile) {
+      toast({
+        title: "Please select an image!",
+        status: "error",
+        duration: 2000,
+        isClosable: false,
+      });
+      return false;
+    }
+
+    if (!imageFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      toast({
+        title: "Please select an image!",
+        status: "error",
+        duration: 2000,
+        isClosable: false,
+      });
+      return false;
+    }
+  };
+
   async function itemPublishClickHandler(e: any) {
     e.preventDefault();
     console.log(itemInfo);
     setIsLoading(true);
+
+    // upload image
+
     try {
       const docRef = await addDoc(collection(db, "itemData"), {
+        itemId: uuid(),
         itemName: itemInfo.itemName,
-        itemBasePrice: itemInfo.itemPrice,
+        itemPrice: itemInfo.itemPrice,
         itemDesc: itemInfo.itemDesc,
-        auctionEndTime: itemInfo.auctionTimeLeft,
+        auctionTimeLeft: itemInfo.auctionTimeLeft,
+        itemPhotoURL: itemInfo.itemPhotoURL,
       });
       // console.log("Document written with ID: ", docRef.id);
       setIsLoading(false);
@@ -86,18 +119,15 @@ function SellerDashboard() {
 
   useEffect(() => {
     const querySnap = query(collection(db, "itemData"));
-    const unsub = onSnapshot(querySnap, (querySnapshot) => {
+    const getData = onSnapshot(querySnap, (querySnapshot) => {
       let itemDataArray: any = [];
       querySnapshot.forEach((doc) => {
         itemDataArray.push(doc.data());
       });
       setItemDataCollection(itemDataArray);
     });
-    return () => unsub();
+    return () => getData();
   }, []);
-
-  console.log(itemDataCollection);
-  
 
   return (
     <Box>
@@ -107,11 +137,19 @@ function SellerDashboard() {
       </Box>
 
       <Box my={2} mx={6} borderRadius="md">
-        <Grid templateColumns='repeat(5, 1fr)' gap={6}>
-          {itemDataCollection?.map((item) => (
-            <ItemCard {...item}/>
-          ))}
-        </Grid>
+        {itemDataCollection.length ? (
+          <Grid templateColumns="repeat(5, 1fr)" gap={5}>
+            {itemDataCollection?.map((item: any) => (
+              <Link to={`/product/${item.itemId}`}>
+                <ItemCard {...item} key={item.itemId} />
+              </Link>
+            ))}
+          </Grid>
+        ) : (
+          <Center h="20vh" color="teal">
+            <Spinner size="xl" />
+          </Center>
+        )}
       </Box>
 
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
@@ -155,9 +193,9 @@ function SellerDashboard() {
                 pt="1"
                 name="itemPhoto"
                 type="file"
-                accept="image/x-png,image/gif,image/jpeg"
+                accept="image/x-png,image/jpeg,image/jpg"
                 defaultValue={itemInfo.itemPhoto}
-                onChange={handleInput}
+                onChange={photoInputHandler}
               />
             </FormControl>
 
