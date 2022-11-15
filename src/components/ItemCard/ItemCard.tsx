@@ -17,8 +17,8 @@ function ItemCard({itemName, itemPrice, auctionTimeLeft}: ItemCardProps) {
         <Heading as="h3" size="lg">
           {itemName}
         </Heading>
-        <Text fontSize="lg">{itemPrice}</Text>
-        <Text fontSize="sm">{dayjs(auctionTimeLeft).fromNow()}</Text>
+        <Text fontSize="lg">₹{itemPrice}</Text>
+        <Text fontSize="sm">Auction ending in {dayjs(auctionTimeLeft).fromNow()}</Text>
       </Stack>
     </Box>
     </GridItem>

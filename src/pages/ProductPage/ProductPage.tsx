@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Flex,
   Heading,
   HStack,
@@ -13,34 +14,45 @@ import {
   ListIcon,
   ListItem,
   Spacer,
+  Spinner,
   Text,
   useToast,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import ProductImg from "../../assets/product-img.jpg";
 import { CheckIcon } from "@chakra-ui/icons";
+import { useParams } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../utils/firebaseConfig";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 function ProductPage() {
   const toast = useToast();
   const sellerPrice = 120000;
-  const [newBidderPrice, setNewBidderPrice] = useState("")
-  const [prevBiddedPrice, setPrevBiddedPrice] = useState(0)
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const [newBidderPrice, setNewBidderPrice] = useState("");
+  const [prevBiddedPrice, setPrevBiddedPrice] = useState(0);
+  const [productData, setProductData] = useState({});
+
+  let { productID } = useParams();
+
   const priceUpdateHandler = () => {
-    if (parseInt(newBidderPrice)>sellerPrice){
-      if (parseInt(newBidderPrice)> prevBiddedPrice){
+    if (parseInt(newBidderPrice) > productData?.itemPrice) {
+      if (parseInt(newBidderPrice) > prevBiddedPrice) {
         toast({
           title: "Bidding successfull.",
           status: "success",
           duration: 2000,
           isClosable: false,
         });
-        setPrevBiddedPrice(parseInt(newBidderPrice))
+        setPrevBiddedPrice(parseInt(newBidderPrice));
       } else {
         toast({
           title: "Bidding un-successfull.",
-          description:"Please bid higher than your last bidded price",
+          description: "Please bid higher than your last bidded price",
           status: "error",
           duration: 2000,
           isClosable: false,
@@ -49,96 +61,160 @@ function ProductPage() {
     } else {
       toast({
         title: "Bidding un-successfull.",
-        description:"Please bid higher than base price",
+        description: "Please bid higher than base price",
         status: "error",
         duration: 2000,
         isClosable: false,
       });
-      
     }
   };
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      // const docRef = doc(db, "itemData", "b3cf5d6f5dda584d");
+      try {
+        const docRef = doc(db, "itemData", `${productID?.toString()}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          console.log(docSnap.data());
+          setProductData(docSnap.data());
+        } else {
+          // doc.data() will be undefined in this case
+          toast({
+            title: "Product not found",
+            status: "error",
+            duration: 2000,
+            isClosable: false,
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Something went wrong.",
+          description: `${error}`,
+          status: "error",
+          duration: 2000,
+          isClosable: false,
+        });
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchProductData().catch((err) =>
+      toast({
+        title: "Couldn't fetch the data.",
+        description: `${err}`,
+        status: "error",
+        duration: 2000,
+        isClosable: false,
+      })
+    );
+  }, [productID]);
 
   return (
     <Box>
       <Navbar />
-      <Flex py={2} px={4} m={4}>
-        <Spacer />
-        <Box boxSize="lg">
-          <Image
-            src={ProductImg}
-            fallbackSrc="https://via.placeholder.com/150"
-          />
-        </Box>
-        <Spacer />
-        <Box>
-          <Heading mb={2} as="h2" size="2xl">
-            Mac Computer
-          </Heading>
-          <HStack spacing="24px">
-            <Box background="gray.200" p={4} borderRadius={"md"}>
-              <Text fontSize="2xl">Time</Text>
-              <Text fontSize="lg">Time Left</Text>
+
+      {isLoading ? (
+        <Center h="50vh">
+          <Spinner color="teal" size="xl" />
+        </Center>
+      ) : (
+        <>
+          <Flex py={2} px={4} m={4}>
+            <Spacer />
+            <Box boxSize="lg">
+              <Image
+                src={ProductImg}
+                fallbackSrc="https://via.placeholder.com/150"
+              />
             </Box>
+            <Spacer />
             <Box>
-              <Text fontSize="lg">
-                Auction Price: ₹
-                <span>{sellerPrice.toLocaleString("en-IN")}</span>
+              <Text color={"gray.600"}>
+                Product ID: {productData?.itemId.toUpperCase()}
               </Text>
-              <InputGroup size="lg">
-                <InputLeftElement
-                  pointerEvents="none"
-                  color="gray.300"
-                  fontSize="1.2em"
-                  children="₹"
-                />
-                <Input
-                  onChange={(e) => setNewBidderPrice(e.target.value as string)}
-                  size="lg"
-                  pr="4.5rem"
-                  placeholder="Bid your price"
-                />
-                <InputRightElement width="4.5rem">
-                  <Button mr="0.5rem" h="2rem" size="lg" onClick={priceUpdateHandler}>
-                    Bid
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
+
+              <Heading mb={2} as="h2" size="2xl">
+                {productData?.itemName}
+              </Heading>
+              <HStack spacing="24px">
+                <Box background="gray.200" p={4} borderRadius={"md"}>
+                  <Text fontSize="lg">Auction ending in</Text>
+                  <Text fontSize="2xl" fontWeight="bold">{dayjs(productData?.auctionTimeLeft).fromNow()}</Text>
+                </Box>
+                <Box>
+                  <Text fontSize="lg">
+                    Auction Price: ₹
+                    <span>
+                      {productData?.itemPrice.toLocaleString("en-IN")}
+                    </span>
+                  </Text>
+                  <InputGroup size="lg">
+                    <InputLeftElement
+                      pointerEvents="none"
+                      color="gray.300"
+                      fontSize="1.2em"
+                      children="₹"
+                    />
+                    <Input
+                      onChange={(e) =>
+                        setNewBidderPrice(e.target.value as string)
+                      }
+                      size="lg"
+                      pr="4.5rem"
+                      placeholder="Bid your price"
+                    />
+                    <InputRightElement width="4.5rem">
+                      <Button
+                        mr="0.5rem"
+                        h="2rem"
+                        size="lg"
+                        onClick={priceUpdateHandler}
+                      >
+                        Bid
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
+                </Box>
+              </HStack>
+              <Box
+                p={4}
+                my={4}
+                background={"green.100"}
+                borderRadius={"lg"}
+                borderBottom="8px"
+                borderColor={"green.400"}
+              >
+                <Text fontSize="lg">
+                  Your last bidded Price: ₹
+                  <span>{prevBiddedPrice.toLocaleString()}</span>
+                </Text>
+              </Box>
+              <Box>
+                <Heading fontSize="md">Product Features</Heading>
+                <List spacing={3}>
+                  <ListItem>
+                    <ListIcon as={CheckIcon} color="green.500" />
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit
+                  </ListItem>
+                  <ListItem>
+                    <ListIcon as={CheckIcon} color="green.500" />
+                    Assumenda, quia temporibus eveniet a libero incidunt
+                    suscipit
+                  </ListItem>
+                  <ListItem>
+                    <ListIcon as={CheckIcon} color="green.500" />
+                    Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                  </ListItem>
+                  {/* You can also use custom icons from react-icons */}
+                </List>
+              </Box>
             </Box>
-          </HStack>
-          <Box
-            p={4}
-            my={4}
-            background={"green.100"}
-            borderRadius={"lg"}
-            borderBottom="8px"
-            borderColor={"green.400"}
-          >
-            <Text fontSize="lg" >
-              Your last bidded Price: ₹
-              <span>{prevBiddedPrice.toLocaleString()}</span>
-            </Text>
-          </Box>
-          <Box>
-            <Heading fontSize="md">Product Features</Heading>
-            <List spacing={3}>
-              <ListItem>
-                <ListIcon as={CheckIcon} color="green.500" />
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit
-              </ListItem>
-              <ListItem>
-                <ListIcon as={CheckIcon} color="green.500" />
-                Assumenda, quia temporibus eveniet a libero incidunt suscipit
-              </ListItem>
-              <ListItem>
-                <ListIcon as={CheckIcon} color="green.500" />
-                Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-              </ListItem>
-              {/* You can also use custom icons from react-icons */}
-            </List>
-          </Box>
-        </Box>
-        <Spacer />
-      </Flex>
+            <Spacer />
+          </Flex>
+        </>
+      )}
     </Box>
   );
 }

@@ -23,7 +23,14 @@ import {
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import { db } from "../../utils/firebaseConfig";
-import { collection, addDoc, query, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  onSnapshot,
+  doc,
+  setDoc,
+} from "firebase/firestore";
 import ItemCard from "../../components/ItemCard/ItemCard";
 import uuid from "react-uuid";
 import { Link } from "react-router-dom";
@@ -85,25 +92,52 @@ function SellerDashboard() {
     setIsLoading(true);
 
     // upload image
-
+    const itemUniqueId = uuid().substring(0, 19).split("-").join("")
     try {
-      const docRef = await addDoc(collection(db, "itemData"), {
-        itemId: uuid(),
+      const docRef = doc(db, "itemData", itemUniqueId);
+
+      const itemData = {
+        itemId: itemUniqueId,
         itemName: itemInfo.itemName,
         itemPrice: itemInfo.itemPrice,
         itemDesc: itemInfo.itemDesc,
         auctionTimeLeft: itemInfo.auctionTimeLeft,
         itemPhotoURL: itemInfo.itemPhotoURL,
-      });
+      };
+
+      // const docRef = await addDoc(collection(db, "itemData"), {
+      //   itemId: uuid(),
+      //   itemName: itemInfo.itemName,
+      //   itemPrice: itemInfo.itemPrice,
+      //   itemDesc: itemInfo.itemDesc,
+      //   auctionTimeLeft: itemInfo.auctionTimeLeft,
+      //   itemPhotoURL: itemInfo.itemPhotoURL,
+      // });
       // console.log("Document written with ID: ", docRef.id);
-      setIsLoading(false);
-      toast({
-        title: "Your item is online now",
-        status: "success",
-        duration: 2000,
-        isClosable: false,
-      });
-    } catch (e) {
+      setDoc(docRef, itemData)
+        .then((docRef) => {
+          setIsLoading(false);
+          toast({
+            title: "Your item is online now",
+            status: "success",
+            duration: 2000,
+            isClosable: false,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          console.error("Error adding item: ", e);
+          setIsLoading(false);
+          toast({
+            title: "Error adding item",
+            description: `${e}`,
+            status: "error",
+            duration: 2000,
+            isClosable: false,
+          });
+        });
+    } catch (error) {
+      console.log(error);
       console.error("Error adding item: ", e);
       setIsLoading(false);
       toast({
@@ -114,6 +148,7 @@ function SellerDashboard() {
         isClosable: false,
       });
     }
+
     onClose();
   }
 
