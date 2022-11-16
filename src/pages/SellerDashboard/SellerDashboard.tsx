@@ -231,7 +231,7 @@ function SellerDashboard() {
               />
             </FormControl>
 
-            <FormControl isRequired marginBottom={4}>
+            <FormControl isRequired>
               <FormLabel>Auction Ending date-time</FormLabel>
               <Input
                 placeholder="Select Date and Time"

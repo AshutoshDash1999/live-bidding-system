@@ -47,28 +47,48 @@ function ProductPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [newBidderPrice, setNewBidderPrice] = useState("");
   const [productData, setProductData] = useState({} as ProductDataType);
-  const [highestBiddedPrice, setHighestBiddedPrice] = useState("0")
+  const [highestBiddedPrice, setHighestBiddedPrice] = useState("0");
   let { productID } = useParams();
+
+  // get data from frirebase realtime
+  const highestBiddedPriceHandler = () => {
+    get(
+      child(
+        ref(rtdb),
+        "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice"
+      )
+    )
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setHighestBiddedPrice(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const priceUpdateHandler = async () => {
     if (parseInt(newBidderPrice) > parseInt(productData?.itemPrice)) {
       if (parseInt(newBidderPrice) > parseInt(highestBiddedPrice)) {
-        
         // add data to realtime database
         try {
           const itemReferenceInRTDB = ref(
             rtdb,
             "product/" + `product_id_${productData!.itemId}`
-            );
-            await set(itemReferenceInRTDB, {
-              highestBiddedPrice: newBidderPrice,
-            });
-            toast({
-              title: "Bidding successfull.",
-              status: "success",
-              duration: 2000,
-              isClosable: false,
-            });
+          );
+          await set(itemReferenceInRTDB, {
+            highestBiddedPrice: newBidderPrice,
+          });
+          highestBiddedPriceHandler();
+          toast({
+            title: "Bidding successfull.",
+            status: "success",
+            duration: 2000,
+            isClosable: false,
+          });
         } catch (error) {
           toast({
             title: "Bidding un-successfull.",
@@ -78,6 +98,7 @@ function ProductPage() {
             isClosable: false,
           });
         }
+
       } else {
         toast({
           title: "Bidding un-successfull.",
@@ -137,26 +158,23 @@ function ProductPage() {
       })
     );
   }, [productID]);
-  
 
-  // onValue(ref(rtdb, "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice"), (snapshot) => {
-  //   if (snapshot.exists()) {
-  //     let data = snapshot.val();
-  //     setHighestBiddedPrice(data);
-  //   } else {
-  //     console.log("No data available");
-  //   }
-  // })
-
-  get(child(ref(rtdb), "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice")).then((snapshot) => {
-    if (snapshot.exists()) {
-      setHighestBiddedPrice(snapshot.val());
-    } else {
-      console.log("No data available");
-    }
-  }).catch((error) => {
-    console.error(error);
-  });
+  get(
+    child(
+      ref(rtdb),
+      "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice"
+    )
+  )
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        setHighestBiddedPrice(snapshot.val());
+      } else {
+        console.log("No data available");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
   return (
     <Box>
