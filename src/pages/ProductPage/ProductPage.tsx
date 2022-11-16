@@ -29,7 +29,7 @@ import { CheckIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db, rtdb } from "../../utils/firebaseConfig";
-import { onValue, ref, set } from "firebase/database";
+import { child, get, onValue, ref, set } from "firebase/database";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -81,7 +81,7 @@ function ProductPage() {
       } else {
         toast({
           title: "Bidding un-successfull.",
-          description: "Please bid higher than your last bidded price",
+          description: "Please bid higher than highest bidded price",
           status: "error",
           duration: 2000,
           isClosable: false,
@@ -137,11 +137,26 @@ function ProductPage() {
       })
     );
   }, [productID]);
+  
 
-  onValue(ref(rtdb, "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice"), async (snapshot) => {
-    let data = await snapshot.val();
-    setHighestBiddedPrice(data);
-  })
+  // onValue(ref(rtdb, "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice"), (snapshot) => {
+  //   if (snapshot.exists()) {
+  //     let data = snapshot.val();
+  //     setHighestBiddedPrice(data);
+  //   } else {
+  //     console.log("No data available");
+  //   }
+  // })
+
+  get(child(ref(rtdb), "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice")).then((snapshot) => {
+    if (snapshot.exists()) {
+      setHighestBiddedPrice(snapshot.val());
+    } else {
+      console.log("No data available");
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
 
   return (
     <Box>
