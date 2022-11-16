@@ -2,7 +2,8 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth"
-import {getFirestore} from "firebase/firestore"
+import { getFirestore } from "firebase/firestore"
+import { getDatabase, ref } from "firebase/database"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -15,7 +16,8 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_APP_FIREBASE_MESSAGING_SENDERID,
   appId: import.meta.env.VITE_APP_FIREBASE_APPID,
-  measurementId: import.meta.env.VITE_APP_FIREBASE_MEASUREMENTID
+  measurementId: import.meta.env.VITE_APP_FIREBASE_MEASUREMENTID,
+  databaseURL: import.meta.env.VITE_APP_FIREBASE_DATABASE_URL,
 };
 
 // Initialize Firebase
@@ -23,3 +25,4 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 export const auth = getAuth(app)
 export const db = getFirestore(app)
+export const rtdb = getDatabase(app)

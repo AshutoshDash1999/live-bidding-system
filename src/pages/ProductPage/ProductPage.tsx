@@ -28,39 +28,56 @@ import ProductImg from "../../assets/product-img.jpg";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../utils/firebaseConfig";
+import { db, rtdb } from "../../utils/firebaseConfig";
+import { onValue, ref, set } from "firebase/database";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 interface ProductDataType {
-  itemId:string,
-  itemPrice:string,
-  itemName:string,
-  itemDesc:string,
-  auctionTimeLeft:string
+  itemId: string;
+  itemPrice: string;
+  itemName: string;
+  itemDesc: string;
+  auctionTimeLeft: string;
 }
 
 function ProductPage() {
   const toast = useToast();
-  const sellerPrice = 120000;
   const [isLoading, setIsLoading] = useState(true);
   const [newBidderPrice, setNewBidderPrice] = useState("");
-  const [prevBiddedPrice, setPrevBiddedPrice] = useState(0);
   const [productData, setProductData] = useState({} as ProductDataType);
-
+  const [highestBiddedPrice, setHighestBiddedPrice] = useState("0")
   let { productID } = useParams();
 
-  const priceUpdateHandler = () => {
+  const priceUpdateHandler = async () => {
     if (parseInt(newBidderPrice) > parseInt(productData?.itemPrice)) {
-      if (parseInt(newBidderPrice) > prevBiddedPrice) {
-        toast({
-          title: "Bidding successfull.",
-          status: "success",
-          duration: 2000,
-          isClosable: false,
-        });
-        setPrevBiddedPrice(parseInt(newBidderPrice));
+      if (parseInt(newBidderPrice) > parseInt(highestBiddedPrice)) {
+        
+        // add data to realtime database
+        try {
+          const itemReferenceInRTDB = ref(
+            rtdb,
+            "product/" + `product_id_${productData!.itemId}`
+            );
+            await set(itemReferenceInRTDB, {
+              highestBiddedPrice: newBidderPrice,
+            });
+            toast({
+              title: "Bidding successfull.",
+              status: "success",
+              duration: 2000,
+              isClosable: false,
+            });
+        } catch (error) {
+          toast({
+            title: "Bidding un-successfull.",
+            description: `${error}`,
+            status: "error",
+            duration: 2000,
+            isClosable: false,
+          });
+        }
       } else {
         toast({
           title: "Bidding un-successfull.",
@@ -87,7 +104,7 @@ function ProductPage() {
         const docRef = doc(db, "itemData", `${productID?.toString()}`);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log(docSnap.data());
+          // console.log(docSnap.data());
           setProductData(docSnap.data() as ProductDataType);
         } else {
           // doc.data() will be undefined in this case
@@ -107,7 +124,6 @@ function ProductPage() {
           isClosable: false,
         });
       }
-
       setIsLoading(false);
     };
 
@@ -121,6 +137,11 @@ function ProductPage() {
       })
     );
   }, [productID]);
+
+  onValue(ref(rtdb, "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice"), async (snapshot) => {
+    let data = await snapshot.val();
+    setHighestBiddedPrice(data);
+  })
 
   return (
     <Box>
@@ -150,7 +171,7 @@ function ProductPage() {
                 {productData!.itemName}
               </Heading>
               {dayjs(productData!.auctionTimeLeft).fromNow().includes("ago") ? (
-                <Alert status="error" borderRadius="md" variant='left-accent'>
+                <Alert status="error" borderRadius="md" variant="left-accent">
                   <AlertIcon />
                   <AlertTitle>Timer expired!</AlertTitle>
                   <AlertDescription>
@@ -168,9 +189,7 @@ function ProductPage() {
                   <Box>
                     <Text fontSize="lg">
                       Auction Price: ₹
-                      <span>
-                        {productData!.itemPrice.toLocaleString()}
-                      </span>
+                      <span>{productData!.itemPrice.toLocaleString()}</span>
                     </Text>
                     <InputGroup size="lg">
                       <InputLeftElement
@@ -202,14 +221,19 @@ function ProductPage() {
                 </HStack>
               )}
 
-              <Alert my="2" status="success" borderRadius="md" variant='left-accent'>
-                  <AlertDescription>
+              <Alert
+                my="2"
+                status="success"
+                borderRadius="md"
+                variant="left-accent"
+              >
+                <AlertDescription>
                   <Text fontSize="lg">
-                  Your last bidded Price: ₹
-                  <span>{prevBiddedPrice.toLocaleString()}</span>
-                </Text>
-                  </AlertDescription>
-                </Alert>
+                    Last Highest Bidded Price: ₹
+                    <span>{highestBiddedPrice}</span>
+                  </Text>
+                </AlertDescription>
+              </Alert>
               <Box>
                 <Heading fontSize="md">Product Features</Heading>
                 <List spacing={3}>
