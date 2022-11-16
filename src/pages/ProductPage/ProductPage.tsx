@@ -28,11 +28,12 @@ import ProductImg from "../../assets/product-img.jpg";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
-import { db, rtdb } from "../../utils/firebaseConfig";
-import { child, get, onValue, ref, set } from "firebase/database";
+import { auth, db, rtdb } from "../../utils/firebaseConfig";
+import { child, get, ref, set } from "firebase/database";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
+import { useAuthState } from "react-firebase-hooks/auth";
 
 interface ProductDataType {
   itemId: string;
@@ -49,6 +50,7 @@ function ProductPage() {
   const [productData, setProductData] = useState({} as ProductDataType);
   const [highestBiddedPrice, setHighestBiddedPrice] = useState("0");
   let { productID } = useParams();
+  const [user, loading, error] = useAuthState(auth);
 
   // get data from frirebase realtime
   const highestBiddedPriceHandler = () => {
@@ -79,9 +81,13 @@ function ProductPage() {
             rtdb,
             "product/" + `product_id_${productData!.itemId}`
           );
-          await set(itemReferenceInRTDB, {
-            highestBiddedPrice: newBidderPrice,
-          });
+          if (user){
+            await set(itemReferenceInRTDB, {
+              accountHolderName: user.displayName,
+              accountHolderEmail: user.email,
+              highestBiddedPrice: newBidderPrice,
+            });
+          }
           highestBiddedPriceHandler();
           toast({
             title: "Bidding successfull.",

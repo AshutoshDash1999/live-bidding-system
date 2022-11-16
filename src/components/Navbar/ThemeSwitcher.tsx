@@ -2,9 +2,9 @@ import React from 'react'
 import { Button, useColorMode } from '@chakra-ui/react'
 
 function ThemeSwitcher() {
-    const {toggleColorMode} = useColorMode()
+    const {colorMode, toggleColorMode} = useColorMode()
   return (
-    <Button onClick={toggleColorMode}>ThemeSwitcher</Button>
+    <Button onClick={toggleColorMode}>{colorMode === 'light' ? "Sun" : "Moon"}</Button>
   )
 }
 

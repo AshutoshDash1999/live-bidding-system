@@ -36,14 +36,15 @@ function Navbar() {
   const [user, loading, error] = useAuthState(auth);
   const [showUserName, setUserName] = useState<string>("")
   const [showUserPhoto, setUserPhoto] = useState<string>("")
+
   useEffect(()=>{
     if (user){
       setUserName(user.displayName as string)
       setUserPhoto(user.photoURL as string)
+    } else if (loading){
+      setUserName("Loading Name...")
     }
-  }, [user])
-
-
+  }, [user, loading])
 
   const navbarBg = useColorModeValue("gray.200", "whiteAlpha.50");
 
