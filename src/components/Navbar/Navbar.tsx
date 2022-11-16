@@ -15,6 +15,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../utils/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
+import Logout from "./Logout";
 
 const NavItems = [
   {
@@ -86,9 +87,7 @@ function Navbar() {
             Welcome, {showUserName} <Avatar name={showUserName} ml="2" size='sm' src={showUserPhoto} />
           </Button>
           <ThemeSwitcher />
-          <Button colorScheme="red" variant="solid" onClick={logoutHandler}>
-            Log Out
-          </Button>
+          <Logout/>
         </HStack>
       </Flex>
     </Box>
