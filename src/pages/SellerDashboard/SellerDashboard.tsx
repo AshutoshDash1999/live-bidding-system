@@ -226,7 +226,7 @@ function SellerDashboard() {
                 name="itemPhoto"
                 type="file"
                 accept="image/x-png,image/jpeg,image/jpg"
-                defaultValue={itemInfo.itemPhoto}
+                // defaultValue={itemInfo.itemPhoto}
                 onChange={photoInputHandler}
               />
             </FormControl>
