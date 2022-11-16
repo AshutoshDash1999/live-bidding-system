@@ -14,12 +14,14 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { db } from '../../utils/firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 function Registration() {
   const toast = useToast();
+  const navigate = useNavigate();
   const [registerUserInfo, setRegisterUserInfo] = useState({
     role: 'bidder',
     fname: '',
@@ -52,6 +54,8 @@ function Registration() {
         duration: 2000,
         isClosable: false,
       });
+      navigate('/home');
+
     } catch (e) {
       console.error('Error adding document: ', e);
       setIsLoading(false);
