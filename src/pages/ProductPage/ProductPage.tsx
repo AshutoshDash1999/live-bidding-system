@@ -49,20 +49,17 @@ function ProductPage() {
   const [newBidderPrice, setNewBidderPrice] = useState("");
   const [productData, setProductData] = useState({} as ProductDataType);
   const [highestBiddedPrice, setHighestBiddedPrice] = useState("0");
-  let { productID } = useParams();
+  const { productID } = useParams();
   const [user, loading, error] = useAuthState(auth);
+  const [highestBidderName, setHighestBidderName] = useState("");
 
   // get data from frirebase realtime
   const highestBiddedPriceHandler = () => {
-    get(
-      child(
-        ref(rtdb),
-        "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice"
-      )
-    )
+    get(child(ref(rtdb), "product/" + `product_id_${productData!.itemId}`))
       .then((snapshot) => {
         if (snapshot.exists()) {
-          setHighestBiddedPrice(snapshot.val());
+          setHighestBidderName(snapshot.val()["accountHolderName"]);
+          setHighestBiddedPrice(snapshot.val()["highestBiddedPrice"]);
         } else {
           console.log("No data available");
         }
@@ -81,7 +78,7 @@ function ProductPage() {
             rtdb,
             "product/" + `product_id_${productData!.itemId}`
           );
-          if (user){
+          if (user) {
             await set(itemReferenceInRTDB, {
               accountHolderName: user.displayName,
               accountHolderEmail: user.email,
@@ -104,7 +101,6 @@ function ProductPage() {
             isClosable: false,
           });
         }
-
       } else {
         toast({
           title: "Bidding un-successfull.",
@@ -165,15 +161,11 @@ function ProductPage() {
     );
   }, [productID]);
 
-  get(
-    child(
-      ref(rtdb),
-      "product/" + `product_id_${productData!.itemId}` + "/highestBiddedPrice"
-    )
-  )
+  get(child(ref(rtdb), "product/" + `product_id_${productData!.itemId}`))
     .then((snapshot) => {
       if (snapshot.exists()) {
-        setHighestBiddedPrice(snapshot.val());
+        setHighestBidderName(snapshot.val()["accountHolderName"]);
+        setHighestBiddedPrice(snapshot.val()["highestBiddedPrice"]);
       } else {
         console.log("No data available");
       }
@@ -267,10 +259,12 @@ function ProductPage() {
                 variant="left-accent"
               >
                 <AlertDescription>
-                  <Text fontSize="lg">
-                    Last Highest Bidded Price: ₹
-                    <span>{highestBiddedPrice}</span>
-                  </Text>
+                  <HStack>
+                    <Text fontSize="lg">Last highest bidded price is</Text>
+                    <Text fontWeight="bold" color="green.800">₹ {highestBiddedPrice}</Text>
+                    <span>by</span>
+                    <Text fontWeight="bold" color="green.800">{highestBidderName}</Text>
+                  </HStack>
                 </AlertDescription>
               </Alert>
               <Box>
