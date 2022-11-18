@@ -23,11 +23,6 @@ const NavItems = [
     href: "/home",
     icon: "",
   },
-  {
-    navItem: "My Biddings",
-    href: "/biddings",
-    icon: "",
-  },
 ];
 
 function Navbar() {

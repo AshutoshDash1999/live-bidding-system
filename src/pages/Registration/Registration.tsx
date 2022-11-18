@@ -70,7 +70,6 @@ function Registration() {
   }
 
   const handleInput = (event: any) => {
-    console.log(event.target);
     setRegisterUserInfo({
       ...registerUserInfo,
       [event.target.name]: event.target.value,

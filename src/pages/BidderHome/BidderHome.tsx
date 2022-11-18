@@ -27,8 +27,8 @@ function BidderHome() {
         {itemDataCollection.length ? (
           <Grid templateColumns="repeat(5, 1fr)" gap={5}>
             {itemDataCollection?.map((item:any) => (
-              <Link to={`/product/${item.itemId}`}>
-              <ItemCard {...item} key={item.itemId} />
+              <Link to={`/product/${item.itemId}`} key={item.itemId}>
+              <ItemCard {...item} />
               </Link>
             ))}
           </Grid>
