@@ -1,19 +1,19 @@
 import BidderHome from "../BidderHome/BidderHome";
 import SellerDashboard from "../SellerDashboard/SellerDashboard";
-import { useSelector } from "react-redux";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../utils/firebaseConfig";
 import { auth } from "../../utils/firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
-import { useToast } from "@chakra-ui/react";
-
+import { useSelector, useDispatch } from 'react-redux'
+import { updateUserName, updateUserEmail, updateUserRole } from "../../features/user/userSlice";
+import { RootState } from "../../app/store";
 function Home() {
   const [user, loading, error] = useAuthState(auth);
   const [userEmail, setUserEmail] = useState("");
   const [userRole, setUserRole] = useState("");
+  const dispatch = useDispatch()
   // const { userRole } = useSelector((store: any) => store.userInfo); // object destructuring...when variable name and key we want to access are same
-  const toast = useToast();
 
   useEffect(() => {
     if (user) {
@@ -31,16 +31,23 @@ function Home() {
         );
         const users = await getDocs(userMailQuery);
         users.forEach((doc) => {
-          setUserRole(doc.data().role);
+          console.log(doc.data());
+          dispatch(updateUserName(doc.data().firstName))
+          dispatch(updateUserEmail(doc.data().mailID))
+          dispatch(updateUserRole(doc.data().role))
         });
       } catch (error) {
-        console.log("Error: ", error);
+        console.warn("Error in getUserRoleQuery in Home.tsx file: ", error);
       }
     };
-    getUserRoleQuery()
+    getUserRoleQuery();
   });
-
-  // console.log(getQuery());
+  
+  const getUserRoleFromStore = async () => {
+    const fetchCurrentUserRole = await useSelector((state: RootState) => state.currentUserStore.userRole)
+    setUserRole(fetchCurrentUserRole)
+  }
+  getUserRoleFromStore()
 
   return (
     <div>{userRole === "seller" ? <SellerDashboard /> : <BidderHome />}</div>

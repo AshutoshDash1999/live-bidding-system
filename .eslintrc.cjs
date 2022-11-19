@@ -5,17 +5,30 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
-    'standard-with-typescript'
+    'standard-with-typescript',
+    'plugin:@typescript-eslint/all',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
+    'plugin:prettier/recommended'
   ],
   overrides: [
   ],
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module'
+    sourceType: 'module',
+    project: ['./tsconfig.json']
   },
   plugins: [
-    'react'
+    'react',
+    '@typescript-eslint',
+    "eslint-comments",
+    "import",
+    "prettier",
+    "promise",
+    "regexp",
   ],
+  project: './tsconfig.eslint.json',
   rules: {
   }
 }
