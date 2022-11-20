@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Badge,
@@ -12,21 +13,20 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { deleteDoc, doc } from "firebase/firestore";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import { db } from "../../utils/firebaseConfig";
+dayjs.extend(relativeTime);
+
 interface ItemCardProps {
   itemName: string;
   itemPrice: string;
   auctionTimeLeft: Date;
   itemId: string;
 }
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { deleteDoc, doc } from "firebase/firestore";
-import { useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
-import { db } from "../../utils/firebaseConfig";
-dayjs.extend(relativeTime);
 
 function ItemCard({
   itemName,
@@ -35,21 +35,15 @@ function ItemCard({
   itemId,
 }: ItemCardProps) {
   const toast = useToast();
-  const initialFocusRef = useRef();
-  const [userRole, setUserRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const getUserRoleFromStore = async () => {
-    const fetchCurrentUserRole = await useSelector(
-      (state: RootState) => state.currentUserStore.userRole
-    );
-    setUserRole(fetchCurrentUserRole);
-  };
-  getUserRoleFromStore();
+  const userRole = useSelector(
+    (state: RootState) => state.currentUserStore.userRole
+  );
 
-  // delete item by seller 
+  // delete item by seller
   const deleteItem = (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
     const docRef = doc(db, "itemData", itemId);
     try {
       // setIsLoading(true);
@@ -122,7 +116,14 @@ function ItemCard({
           )}
 
           {userRole === "seller" ? (
-            <Button colorScheme="red" variant="ghost" leftIcon={<DeleteIcon/>} onClick={deleteItem} isLoading={isLoading} loadingText="Deleting item...">
+            <Button
+              colorScheme="red"
+              variant="ghost"
+              leftIcon={<DeleteIcon />}
+              onClick={deleteItem}
+              isLoading={isLoading}
+              loadingText="Deleting item..."
+            >
               Delete Item
             </Button>
           ) : (
