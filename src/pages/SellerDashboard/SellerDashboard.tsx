@@ -85,8 +85,7 @@ function SellerDashboard() {
 
   async function itemPublishClickHandler(e: any) {
     e.preventDefault();
-    console.log(itemInfo);
-    setIsLoading(true);
+    // setIsLoading(true);
 
     // upload image
     const itemUniqueId = uuid().substring(0, 19).split("-").join("")

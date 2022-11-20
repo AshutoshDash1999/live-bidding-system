@@ -31,7 +31,7 @@ function Home() {
         );
         const users = await getDocs(userMailQuery);
         users.forEach((doc) => {
-          console.log(doc.data());
+          // console.log(doc.data());
           dispatch(updateUserName(doc.data().firstName))
           dispatch(updateUserEmail(doc.data().mailID))
           dispatch(updateUserRole(doc.data().role))
