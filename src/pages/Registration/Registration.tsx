@@ -2,7 +2,6 @@ import { AtSignIcon, PhoneIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
-  ButtonGroup,
   Flex,
   FormControl,
   FormLabel,
@@ -14,10 +13,11 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react';
-import { useState } from 'react';
-import { db } from '../../utils/firebaseConfig';
+import { useEffect, useState } from 'react';
+import { auth, db } from '../../utils/firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 function Registration() {
   const toast = useToast();
@@ -32,6 +32,14 @@ function Registration() {
     yearlyIncome: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState("")
+  const [user, loading, error] = useAuthState(auth);
+
+  useEffect(()=>{
+    if (user){
+      setUserEmail(user.email as string)
+    }
+  }, [user])
 
   async function saveRegistrationInfo(e: any) {
     e.preventDefault();
@@ -42,7 +50,7 @@ function Registration() {
         firstName: registerUserInfo.fname,
         lastName: registerUserInfo.lname,
         mobileNumber: registerUserInfo.mobileNumber,
-        mailID: registerUserInfo.mailId,
+        mailID: userEmail,
         bankAccountNo: registerUserInfo.bankAccountNo,
         yearlyIncome: registerUserInfo.yearlyIncome,
       });
@@ -76,17 +84,6 @@ function Registration() {
     });
   };
 
-  // const resetFormHandler = () => {
-  //   setRegisterUserInfo({
-  //     role: "",
-  //     fname: "",
-  //     lname: "",
-  //     mobileNumber: "",
-  //     mailId: "",
-  //     bankAccountNo: "",
-  //     yearlyIncome: "",
-  //   });
-  // };
   return (
     <Box>
       <Flex alignItems='center' justifyContent='center' height='100vh'>
@@ -158,9 +155,8 @@ function Registration() {
                 <Input
                   type='email'
                   name='mailId'
-                  placeholder='example@mail.com'
-                  defaultValue={registerUserInfo.mailId}
-                  onChange={handleInput}
+                  value={userEmail}
+                  disabled
                 />
               </InputGroup>
             </FormControl>

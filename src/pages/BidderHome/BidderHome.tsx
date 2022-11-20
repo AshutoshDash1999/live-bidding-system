@@ -1,4 +1,4 @@
-import { Box, Center, Grid, Spinner } from "@chakra-ui/react";
+import { Box, Center, Grid, Spinner, Text, VStack } from "@chakra-ui/react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -34,7 +34,10 @@ function BidderHome() {
           </Grid>
         ) : (
           <Center h="20vh" color="teal">
-            <Spinner size="xl" />
+            <VStack spacing="10">
+              <Text fontSize="2xl">No items to show</Text>
+              <Spinner size="xl" />
+            </VStack>
           </Center>
         )}
       </Box>
