@@ -8,6 +8,7 @@ import { db } from "../../utils/firebaseConfig";
 
 function BidderHome() {
   const [itemDataCollection, setItemDataCollection] = useState([]);
+
   useEffect(() => {
     const querySnap = query(collection(db, "itemData"));
     const getData = onSnapshot(querySnap, (querySnapshot) => {
@@ -19,6 +20,7 @@ function BidderHome() {
     });
     return () => getData();
   }, []);
+  
   return (
     <div>
       <Navbar />

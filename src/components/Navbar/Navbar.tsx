@@ -65,6 +65,7 @@ function Navbar() {
         });
       });
   };
+  
   return (
     <Box my={2} mx={6} bg={navbarBg} borderRadius="md">
       <Flex py={2} px={4}>

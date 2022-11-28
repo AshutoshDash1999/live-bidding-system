@@ -20,7 +20,7 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import { db } from "../../utils/firebaseConfig";
 import { collection, query, onSnapshot, doc, setDoc } from "firebase/firestore";
@@ -29,6 +29,8 @@ import uuid from "react-uuid";
 import { Link } from "react-router-dom";
 
 function SellerDashboard() {
+  const cloudinaryRef = useRef<any>();
+  const widgetRef = useRef<any>();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [itemInfo, setItemInfo] = useState({
@@ -55,29 +57,29 @@ function SellerDashboard() {
     });
   };
 
-  const getImageURL = (event: any) => {
-    const imageFile = event.target.files[0];
 
-    if (!imageFile) {
-      toast({
-        title: "Please select an image!",
-        status: "error",
-        duration: 2000,
-        isClosable: false,
-      });
-      return false;
+  useEffect(() => {
+    try {
+      cloudinaryRef.current = window.cloudinary;
+      if (cloudinaryRef.current) {
+        widgetRef.current = cloudinaryRef.current.createUploadWidget(
+          {
+            cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUDNAME,
+            uploadPreset: import.meta.env.VITE_APP_CLOUDINARY_UPLOADPRESET,
+          },
+          (error: any, result: any) => {
+            if (result.info.url){
+              console.info(result.info.url);
+              itemInfo.itemPhotoURL = result.info.url
+            }
+            console.error(error);
+          }
+        );
+      }
+    } catch (err) {
+      console.log(err);
     }
-
-    if (!imageFile.name.match(/\.(jpg|jpeg|png)$/)) {
-      toast({
-        title: "Please select an image!",
-        status: "error",
-        duration: 2000,
-        isClosable: false,
-      });
-      return false;
-    }
-  };
+  }, []);
 
   async function itemPublishClickHandler(e: any) {
     e.preventDefault();
@@ -219,7 +221,7 @@ function SellerDashboard() {
               />
             </FormControl>
 
-            <FormControl isRequired marginBottom={4}>
+            {/* <FormControl isRequired marginBottom={4}>
               <FormLabel>Add Image</FormLabel>
               <Input
                 pt="1"
@@ -229,6 +231,11 @@ function SellerDashboard() {
                 // defaultValue={itemInfo.itemPhoto}
                 onChange={photoInputHandler}
               />
+            </FormControl> */}
+
+            <FormControl isRequired marginBottom={4}>
+              <FormLabel>Add Image</FormLabel>
+              <Button onClick={() => widgetRef.current.open()}>Click to Upload Item Image</Button>
             </FormControl>
 
             <FormControl isRequired>
