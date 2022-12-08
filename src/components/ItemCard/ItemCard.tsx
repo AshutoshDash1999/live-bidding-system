@@ -5,9 +5,11 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Center,
   Flex,
   GridItem,
   Heading,
+  Image,
   Spacer,
   Stack,
   Text,
@@ -26,6 +28,7 @@ interface ItemCardProps {
   itemPrice: string;
   auctionTimeLeft: Date;
   itemId: string;
+  itemPhotoURL: string;
 }
 
 function ItemCard({
@@ -33,6 +36,7 @@ function ItemCard({
   itemPrice,
   auctionTimeLeft,
   itemId,
+  itemPhotoURL,
 }: ItemCardProps) {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -87,8 +91,19 @@ function ItemCard({
         my="4"
         p="4"
         shadow="md"
+        _hover={{
+          shadow: "lg",
+        }}
       >
         <Stack spacing={6}>
+          <Center>
+            <Image
+              objectFit="contain"
+              src={itemPhotoURL}
+              alt={itemName}
+              boxSize="250px"
+            />
+          </Center>
           <Flex alignItems="center">
             <Heading as="h3" size="lg">
               {itemName}

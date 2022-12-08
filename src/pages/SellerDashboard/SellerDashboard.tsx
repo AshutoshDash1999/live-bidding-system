@@ -22,13 +22,14 @@ function SellerDashboard() {
     return () => getData();
   }, []);
 
+
   return (
     <Box>
       <Navbar />
       <PublishItem />
       <Box my={2} mx={6} borderRadius="md">
         {itemDataCollection.length ? (
-          <Grid templateColumns="repeat(5, 1fr)" gap={5}>
+          <Grid templateColumns="repeat(4, 1fr)" gap="10">
             {itemDataCollection?.map((item: any) => (
               <Link to={`/product/${item.itemId}`} key={item.itemId}>
                 <ItemCard {...item} />
