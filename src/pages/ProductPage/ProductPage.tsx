@@ -34,7 +34,6 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import { useAuthState } from "react-firebase-hooks/auth";
-import Confetti from "react-confetti";
 
 interface ProductDataType {
   itemId: string;
@@ -305,11 +304,6 @@ function ProductPage() {
               {highestBidderEmail === currentUserEmail &&
               dayjs(productData!.auctionTimeLeft).fromNow().includes("ago") ? (
                 <>
-                  <Confetti
-                    width={windowSize.windowWidth}
-                    height={windowSize.windowHeight}
-                    recycle={false}
-                  />
                   <Alert
                     my="2"
                     status="info"
