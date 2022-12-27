@@ -20,6 +20,7 @@ import {
   Spacer,
   Spinner,
   Text,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -207,8 +208,9 @@ function ProductPage() {
         <>
           <Flex py={2} px={4} m={4}>
             <Spacer />
-            <Box boxSize="lg">
+            <Box boxSize="lg" rounded="lg">
               <Image
+                rounded="lg"
                 boxSize={{ base: "xs", md: "md" }}
                 src={productData!.itemPhotoURL}
                 objectFit="contain"
@@ -235,7 +237,7 @@ function ProductPage() {
                 </Alert>
               ) : (
                 <HStack spacing="24px">
-                  <Box background="gray.200" p={4} borderRadius={"md"}>
+                  <Box background={useColorModeValue("gray.200", "whiteAlpha.100")} p={4} borderRadius={"md"}>
                     <Text fontSize="lg">Auction ending in</Text>
                     <Text fontSize="2xl" fontWeight="bold">
                       {dayjs(productData!.auctionTimeLeft).fromNow()}
@@ -305,11 +307,11 @@ function ProductPage() {
                   <AlertDescription>
                     <HStack>
                       <Text fontSize="lg">Last highest bidded price is</Text>
-                      <Text fontWeight="bold" color="green.800">
+                      <Text fontWeight="bold" color={useColorModeValue("green.800", "green.500")}>
                         ₹ {highestBiddedPrice}
                       </Text>
                       <span>by</span>
-                      <Text fontWeight="bold" color="green.800">
+                      <Text fontWeight="bold" color={useColorModeValue("green.800", "green.500")}>
                         {highestBidderName}
                       </Text>
                     </HStack>
