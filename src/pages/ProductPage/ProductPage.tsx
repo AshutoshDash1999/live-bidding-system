@@ -206,20 +206,26 @@ function ProductPage() {
         </Center>
       ) : (
         <>
-          <Flex py={2} px={4} m={4}>
+          <Flex
+            alignItems={"center"}
+            justifyContent="center"
+            gap={{ base: "8", md: "10" }}
+            direction={{ base: "column", md: "row" }}
+          >
             <Spacer />
-            <Box boxSize="lg" rounded="lg">
+            <Box boxSize="lg" rounded="lg" p="4">
               <Image
                 rounded="lg"
                 boxSize={{ base: "xs", md: "md" }}
                 src={productData!.itemPhotoURL}
-                objectFit="contain"
+                objectFit="cover"
                 height={"100%"}
                 fallbackSrc="https://via.placeholder.com/450?text=Loading+Image..."
               />
             </Box>
             <Spacer />
-            <Box>
+
+            <Box  p="4">
               <Text color={"gray.600"}>
                 Product ID: {productData!.itemId.toUpperCase()}
               </Text>
@@ -237,7 +243,11 @@ function ProductPage() {
                 </Alert>
               ) : (
                 <HStack spacing="24px">
-                  <Box background={useColorModeValue("gray.200", "whiteAlpha.100")} p={4} borderRadius={"md"}>
+                  <Box
+                    background={useColorModeValue("gray.200", "whiteAlpha.100")}
+                    p={4}
+                    borderRadius={"md"}
+                  >
                     <Text fontSize="lg">Auction ending in</Text>
                     <Text fontSize="2xl" fontWeight="bold">
                       {dayjs(productData!.auctionTimeLeft).fromNow()}
@@ -307,11 +317,17 @@ function ProductPage() {
                   <AlertDescription>
                     <HStack>
                       <Text fontSize="lg">Last highest bidded price is</Text>
-                      <Text fontWeight="bold" color={useColorModeValue("green.800", "green.500")}>
+                      <Text
+                        fontWeight="bold"
+                        color={useColorModeValue("green.800", "green.500")}
+                      >
                         ₹ {highestBiddedPrice}
                       </Text>
                       <span>by</span>
-                      <Text fontWeight="bold" color={useColorModeValue("green.800", "green.500")}>
+                      <Text
+                        fontWeight="bold"
+                        color={useColorModeValue("green.800", "green.500")}
+                      >
                         {highestBidderName}
                       </Text>
                     </HStack>
