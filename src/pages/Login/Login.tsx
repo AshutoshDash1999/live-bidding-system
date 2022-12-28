@@ -78,8 +78,13 @@ function Login() {
         // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        toast({
+          title: error.code,
+          description:error.message,
+          status: 'error',
+          duration: 3000,
+          isClosable: false,
+        });
       });
   };
 
