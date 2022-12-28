@@ -20,11 +20,11 @@ import {
   Spacer,
   Spinner,
   Text,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
-import ProductImg from "../../assets/product-img.jpg";
 import { CheckIcon, StarIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
@@ -34,13 +34,12 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import { useAuthState } from "react-firebase-hooks/auth";
-import Confetti from "react-confetti";
 
 interface ProductDataType {
   itemId: string;
   itemPrice: string;
   itemName: string;
-  itemPhotoURL:string,
+  itemPhotoURL: string;
   itemDesc: string;
   auctionTimeLeft: string;
 }
@@ -56,26 +55,6 @@ function ProductPage() {
   const [highestBidderName, setHighestBidderName] = useState("no one");
   const [highestBidderEmail, setHighestBidderEmail] = useState<string>("");
   const [currentUserEmail, setCurrentUserEmail] = useState<string>("");
-  const [windowSize, setWindowSize] = useState({
-    windowHeight: window.innerHeight,
-    windowWidth: window.innerWidth,
-  });
-
-  // get data from frirebase realtime
-  const highestBiddedPriceHandler = () => {
-    get(child(ref(rtdb), "product/" + `product_id_${productData!.itemId}`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          setHighestBidderName(snapshot.val()["accountHolderName"]);
-          setHighestBiddedPrice(snapshot.val()["highestBiddedPrice"]);
-        } else {
-          console.log("No data available");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   const priceUpdateHandler = async () => {
     if (parseInt(newBidderPrice) > parseInt(productData?.itemPrice)) {
@@ -93,7 +72,21 @@ function ProductPage() {
               highestBiddedPrice: newBidderPrice,
             });
           }
-          highestBiddedPriceHandler();
+          get(
+            child(ref(rtdb), "product/" + `product_id_${productData!.itemId}`)
+          )
+            .then((snapshot) => {
+              if (snapshot.exists()) {
+                setHighestBidderName(snapshot.val()["accountHolderName"]);
+                setHighestBiddedPrice(snapshot.val()["highestBiddedPrice"]);
+                console.log(snapshot.val());
+              } else {
+                console.log("No data available");
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
           toast({
             title: "Bidding successfull.",
             status: "success",
@@ -137,8 +130,6 @@ function ProductPage() {
         if (docSnap.exists()) {
           // console.log(docSnap.data());
           setProductData(docSnap.data() as ProductDataType);
-          console.log(docSnap.data());
-          
         } else {
           // doc.data() will be undefined in this case
           toast({
@@ -177,47 +168,28 @@ function ProductPage() {
     }
   }, [user]);
 
+  //get realtime data from fb
   useEffect(() => {
-    const fetchBidData = async () => {
-      try {
-        const snapshot = await get(
-          child(ref(rtdb), "product/" + `product_id_${productData!.itemId}`)
-        );
-        // console.log(snapshot);
-        
-        if (snapshot.exists()) {
-          setHighestBidderName(snapshot.val()["accountHolderName"]);
-          setHighestBiddedPrice(snapshot.val()["highestBiddedPrice"]);
-          setHighestBidderEmail(snapshot.val()["accountHolderEmail"]);
-
-          console.table({
-            "currentUser": currentUserEmail,
-            "highestBidder":highestBidderEmail
-          });
-        } else {
-          console.log("No data available");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchBidData();
-  }, []);
-
-  useEffect(() => {
-    function handleWindowResize() {
-      setWindowSize({
-        windowHeight: window.innerHeight,
-        windowWidth: window.innerWidth,
-      });
+    try {
+      const dbRef = ref(rtdb);
+      get(child(dbRef, "product/" + `product_id_${productData!.itemId}`))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            setHighestBidderName(snapshot.val()["accountHolderName"]);
+            setHighestBiddedPrice(snapshot.val()["highestBiddedPrice"]);
+            setHighestBidderEmail(snapshot.val()["accountHolderEmail"]);
+          } else {
+            console.log("No data available");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.error(error);
     }
-
-    window.addEventListener("resize", handleWindowResize);
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, []);
+  }, [productData!.itemId]);
 
   // console.table({
   //   "currentUser": currentUserEmail,
@@ -234,16 +206,26 @@ function ProductPage() {
         </Center>
       ) : (
         <>
-          <Flex py={2} px={4} m={4}>
+          <Flex
+            alignItems={"center"}
+            justifyContent="center"
+            gap={{ base: "8", md: "10" }}
+            direction={{ base: "column", md: "row" }}
+          >
             <Spacer />
-            <Box boxSize="lg">
+            <Box boxSize="lg" rounded="lg" p="4">
               <Image
+                rounded="lg"
+                boxSize={{ base: "xs", md: "md" }}
                 src={productData!.itemPhotoURL}
+                objectFit="cover"
+                height={"100%"}
                 fallbackSrc="https://via.placeholder.com/450?text=Loading+Image..."
               />
             </Box>
             <Spacer />
-            <Box>
+
+            <Box  p="4">
               <Text color={"gray.600"}>
                 Product ID: {productData!.itemId.toUpperCase()}
               </Text>
@@ -261,7 +243,11 @@ function ProductPage() {
                 </Alert>
               ) : (
                 <HStack spacing="24px">
-                  <Box background="gray.200" p={4} borderRadius={"md"}>
+                  <Box
+                    background={useColorModeValue("gray.200", "whiteAlpha.100")}
+                    p={4}
+                    borderRadius={"md"}
+                  >
                     <Text fontSize="lg">Auction ending in</Text>
                     <Text fontSize="2xl" fontWeight="bold">
                       {dayjs(productData!.auctionTimeLeft).fromNow()}
@@ -305,11 +291,6 @@ function ProductPage() {
               {highestBidderEmail === currentUserEmail &&
               dayjs(productData!.auctionTimeLeft).fromNow().includes("ago") ? (
                 <>
-                  <Confetti
-                    width={windowSize.windowWidth}
-                    height={windowSize.windowHeight}
-                    recycle={false}
-                  />
                   <Alert
                     my="2"
                     status="info"
@@ -321,7 +302,7 @@ function ProductPage() {
                         <Text fontSize="lg">
                           Congrats!!! You have won the bid. 🥳🎉🎊
                         </Text>
-                        <Button colorScheme="blue">Confirm Purchase</Button>
+                        {/* <Button colorScheme="blue">Confirm Purchase</Button> */}
                       </HStack>
                     </AlertDescription>
                   </Alert>
@@ -336,11 +317,17 @@ function ProductPage() {
                   <AlertDescription>
                     <HStack>
                       <Text fontSize="lg">Last highest bidded price is</Text>
-                      <Text fontWeight="bold" color="green.800">
+                      <Text
+                        fontWeight="bold"
+                        color={useColorModeValue("green.800", "green.500")}
+                      >
                         ₹ {highestBiddedPrice}
                       </Text>
                       <span>by</span>
-                      <Text fontWeight="bold" color="green.800">
+                      <Text
+                        fontWeight="bold"
+                        color={useColorModeValue("green.800", "green.500")}
+                      >
                         {highestBidderName}
                       </Text>
                     </HStack>
@@ -352,17 +339,9 @@ function ProductPage() {
                 <List spacing={3}>
                   <ListItem>
                     <ListIcon as={CheckIcon} color="green.500" />
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit
+                    {productData!.itemDesc}
                   </ListItem>
-                  <ListItem>
-                    <ListIcon as={CheckIcon} color="green.500" />
-                    Assumenda, quia temporibus eveniet a libero incidunt
-                    suscipit
-                  </ListItem>
-                  <ListItem>
-                    <ListIcon as={CheckIcon} color="green.500" />
-                    Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-                  </ListItem>
+
                   {/* You can also use custom icons from react-icons */}
                 </List>
               </Box>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import {
   Badge,
@@ -13,6 +13,7 @@ import {
   Spacer,
   Stack,
   Text,
+  useColorModeValue,
   useToast,
 } from '@chakra-ui/react';
 import dayjs from 'dayjs';
@@ -86,22 +87,25 @@ function ItemCard({
     <GridItem w='100%'>
       <Box
         borderWidth='1px'
-        borderColor='gray.200'
-        borderRadius='md'
+        borderColor={useColorModeValue('gray.200', 'whiteAlpha.50')}
+        borderRadius='lg'
         my='4'
         p='4'
         shadow='md'
         _hover={{
           shadow: 'lg',
         }}
+        height='100%'
+        bg={useColorModeValue('gray.200', 'whiteAlpha.50')}
       >
         <Stack spacing={6}>
           <Center>
             <Image
-              objectFit='contain'
+              objectFit='cover'
               src={itemPhotoURL}
               alt={itemName}
               boxSize='250px'
+              rounded='lg'
             />
           </Center>
           <Flex alignItems='center'>
