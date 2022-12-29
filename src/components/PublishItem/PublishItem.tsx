@@ -43,8 +43,8 @@ function PublishItem() {
   cloudinaryRef.current = window.cloudinary;
   let cloudinaryWidget = window.cloudinary.createUploadWidget(
     {
-      cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUDNAME,
-      uploadPreset: import.meta.env.VITE_APP_CLOUDINARY_UPLOADPRESET,
+      cloudName: "dhux6q0mw",
+    uploadPreset: "r9iisoas",
     },
     (error: any, result: any) => {
       if (!error && result && result.event === "success") {
