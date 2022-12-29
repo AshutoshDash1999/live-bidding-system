@@ -18,10 +18,10 @@ const AppRoutes = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/newUserRegistration" element={<Registration />} />
           <Route path="/product/:productID" element={<ProductPage />} />
+          <Route path="/home" element={<Home />} />
 
         {/* protected routes */}
         <Route path="/" element={<PrivateRoute />}>
-          <Route path="/home" element={<Home />} />
         </Route>
       </Routes>
     </BrowserRouter>
