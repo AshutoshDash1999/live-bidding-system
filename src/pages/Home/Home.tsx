@@ -15,7 +15,9 @@ import { RootState } from '../../app/store';
 function Home() {
   const [user, loading, error] = useAuthState(auth);
   const [userEmail, setUserEmail] = useState('');
-  const [userRole, setUserRole] = useState('');
+  const userRole = useSelector(
+    (state: RootState) => state.currentUserStore.userRole
+  );
   const dispatch = useDispatch();
   // const { userRole } = useSelector((store: any) => store.userInfo); // object destructuring...when variable name and key we want to access are same
 
@@ -45,16 +47,6 @@ function Home() {
       }
     };
     getUserRoleQuery();
-  });
-
-  useEffect(() => {
-    const getUserRoleFromStore = async () => {
-      const fetchCurrentUserRole = await useSelector(
-        (state: RootState) => state.currentUserStore.userRole
-      );
-      setUserRole(fetchCurrentUserRole);
-    };
-    getUserRoleFromStore();
   }, []);
 
   return (
