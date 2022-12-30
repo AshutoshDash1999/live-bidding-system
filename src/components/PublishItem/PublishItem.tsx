@@ -15,9 +15,14 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { doc, setDoc } from "firebase/firestore";
-import { useRef, useState } from "react";
+import {
+  doc,
+  setDoc,
+} from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import uuid from "react-uuid";
+import { RootState } from "../../app/store";
 import { db } from "../../utils/firebaseConfig";
 
 function PublishItem() {
@@ -34,12 +39,19 @@ function PublishItem() {
     itemPhotoURL: "",
   });
 
+  const sellerFirstName = useSelector(
+    (state: RootState) => state.currentUserStore.userFirstName
+  );
+  const sellerLastName = useSelector(
+    (state: RootState) => state.currentUserStore.userLastName
+  );
+  
   // upload image to cloudinary and get upload url
   cloudinaryRef.current = window.cloudinary;
   let cloudinaryWidget = window.cloudinary.createUploadWidget(
     {
-      cloudName:  import.meta.env.VITE_APP_CLOUDINARY_CLOUDNAME,
-    uploadPreset:  import.meta.env.VITE_APP_CLOUDINARY_UPLOADPRESET,
+      cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUDNAME,
+      uploadPreset: import.meta.env.VITE_APP_CLOUDINARY_UPLOADPRESET,
     },
     (error: any, result: any) => {
       if (!error && result && result.event === "success") {
@@ -63,7 +75,6 @@ function PublishItem() {
     e.preventDefault();
     // setIsLoading(true);
 
-    // upload image
     const itemUniqueId = uuid().substring(0, 19).split("-").join("");
     try {
       const docRef = doc(db, "itemData", itemUniqueId);
@@ -75,6 +86,7 @@ function PublishItem() {
         itemDesc: itemInfo.itemDesc,
         auctionTimeLeft: itemInfo.auctionTimeLeft,
         itemPhotoURL: itemInfo.itemPhotoURL,
+        itemPublisher: sellerFirstName + " "+sellerLastName,
       };
 
       // const docRef = await addDoc(collection(db, "itemData"), {

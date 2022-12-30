@@ -1,20 +1,22 @@
-import BidderHome from '../BidderHome/BidderHome';
-import SellerDashboard from '../SellerDashboard/SellerDashboard';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../../utils/firebaseConfig';
-import { auth } from '../../utils/firebaseConfig';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import BidderHome from "../BidderHome/BidderHome";
+import SellerDashboard from "../SellerDashboard/SellerDashboard";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../utils/firebaseConfig";
+import { auth } from "../../utils/firebaseConfig";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   updateUserName,
   updateUserEmail,
   updateUserRole,
-} from '../../features/user/userSlice';
-import { RootState } from '../../app/store';
+  updateUserFirstName,
+  updateUserLastName
+} from "../../features/user/userSlice";
+import { RootState } from "../../app/store";
 function Home() {
   const [user, loading, error] = useAuthState(auth);
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState("");
   const userRole = useSelector(
     (state: RootState) => state.currentUserStore.userRole
   );
@@ -30,10 +32,10 @@ function Home() {
   useEffect(() => {
     const getUserRoleQuery = async () => {
       try {
-        const usersDataRef = collection(db, 'userData');
+        const usersDataRef = collection(db, "userData");
         const userMailQuery = await query(
           usersDataRef,
-          where('mailID', '==', userEmail)
+          where("mailID", "==", userEmail)
         );
         const users = await getDocs(userMailQuery);
         users.forEach((doc) => {
@@ -41,16 +43,20 @@ function Home() {
           dispatch(updateUserName(doc.data().firstName));
           dispatch(updateUserEmail(doc.data().mailID));
           dispatch(updateUserRole(doc.data().role));
+          dispatch(updateUserFirstName(doc.data().firstName));
+          dispatch(updateUserLastName(doc.data().lastName));
         });
       } catch (error) {
-        console.warn('Error in getUserRoleQuery in Home.tsx file: ', error);
+        console.warn("Error in getUserRoleQuery in Home.tsx file: ", error);
       }
     };
     getUserRoleQuery();
-  }, []);
+  }, [userEmail]);
+
+  // console.log(userRole);
 
   return (
-    <div>{userRole === 'seller' ? <SellerDashboard /> : <BidderHome />}</div>
+    <div>{userRole === "seller" ? <SellerDashboard /> : <BidderHome />}</div>
   );
 }
 
