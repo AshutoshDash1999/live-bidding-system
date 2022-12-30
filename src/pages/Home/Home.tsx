@@ -50,8 +50,7 @@ function Home() {
   getUserRoleFromStore()
 
   return (
-    // <div>{userRole === "seller" ? <SellerDashboard /> : <BidderHome />}</div>
-    <div> <SellerDashboard /> </div>
+    <div>{userRole === "seller" ? <SellerDashboard /> : <BidderHome />}</div>
   );
 }
 

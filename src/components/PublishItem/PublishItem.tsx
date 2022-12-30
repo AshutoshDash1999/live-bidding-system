@@ -34,17 +34,12 @@ function PublishItem() {
     itemPhotoURL: "",
   });
 
-  console.table({
-    cloudName: "dhux6q0mw",
-    uploadPreset: "r9iisoas",
-  });
-
   // upload image to cloudinary and get upload url
   cloudinaryRef.current = window.cloudinary;
   let cloudinaryWidget = window.cloudinary.createUploadWidget(
     {
-      cloudName: "dhux6q0mw",
-    uploadPreset: "r9iisoas",
+      cloudName:  import.meta.env.VITE_APP_CLOUDINARY_CLOUDNAME,
+    uploadPreset:  import.meta.env.VITE_APP_CLOUDINARY_UPLOADPRESET,
     },
     (error: any, result: any) => {
       if (!error && result && result.event === "success") {
