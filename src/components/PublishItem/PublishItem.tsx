@@ -38,8 +38,8 @@ function PublishItem() {
   cloudinaryRef.current = window.cloudinary;
   let cloudinaryWidget = window.cloudinary.createUploadWidget(
     {
-      cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUDNAME,
-      uploadPreset: import.meta.env.VITE_APP_CLOUDINARY_UPLOADPRESET,
+      cloudName:  import.meta.env.VITE_APP_CLOUDINARY_CLOUDNAME,
+    uploadPreset:  import.meta.env.VITE_APP_CLOUDINARY_UPLOADPRESET,
     },
     (error: any, result: any) => {
       if (!error && result && result.event === "success") {
@@ -48,7 +48,7 @@ function PublishItem() {
           ...itemInfo,
           itemPhotoURL: result.info.secure_url,
         });
-      } 
+      }
     }
   );
 
