@@ -28,9 +28,7 @@ function BidderHome() {
     );
   }
 
-  console.log(value);
-
-  console.log('bidder home');
+  // console.log(value);
 
   return (
     <div>

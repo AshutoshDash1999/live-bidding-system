@@ -10,6 +10,8 @@ import {
   updateUserName,
   updateUserEmail,
   updateUserRole,
+  updateUserFirstName,
+  updateUserLastName
 } from "../../features/user/userSlice";
 import { RootState } from "../../app/store";
 function Home() {
@@ -41,6 +43,8 @@ function Home() {
           dispatch(updateUserName(doc.data().firstName));
           dispatch(updateUserEmail(doc.data().mailID));
           dispatch(updateUserRole(doc.data().role));
+          dispatch(updateUserFirstName(doc.data().firstName));
+          dispatch(updateUserLastName(doc.data().lastName));
         });
       } catch (error) {
         console.warn("Error in getUserRoleQuery in Home.tsx file: ", error);

@@ -30,7 +30,7 @@ function SellerDashboard() {
     );
   }
 
-  console.log('seller page');
+  // console.log('seller page');
 
   return (
     <Box>

@@ -4,16 +4,20 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 export interface UserState {
     userName: string,
     userEmail: string,
-    userRole: string
+    userRole: string,
+    userFirstName: string,
+    userLastName: string,
 }
 
 const initialState: UserState = {
     userName: "",
     userEmail: "",
-    userRole: "bidder"
+    userRole: "bidder",
+    userFirstName: "",
+    userLastName: "",
 }
 
-export const userInfoSlice = createSlice({
+export const userInfoSlice:any = createSlice({
     name:'currentUserStore',
     initialState,
     reducers:{
@@ -25,12 +29,18 @@ export const userInfoSlice = createSlice({
         },
         updateUserRole: (state, action: PayloadAction<string>) => {
             state.userRole = action.payload
-        }
+        },
+        updateUserFirstName: (state, action: PayloadAction<string>) => {
+            state.userFirstName = action.payload
+        },
+        updateUserLastName: (state, action: PayloadAction<string>) => {
+            state.userLastName = action.payload
+        },
     }
 })
 
 // Action creators are generated for each case reducer function
-export const { updateUserName, updateUserEmail, updateUserRole } = userInfoSlice.actions
+export const { updateUserName, updateUserEmail, updateUserRole, updateUserFirstName, updateUserLastName } = userInfoSlice.actions
 
 export default userInfoSlice.reducer
 

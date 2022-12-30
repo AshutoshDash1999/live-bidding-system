@@ -42,6 +42,7 @@ interface ProductDataType {
   itemPhotoURL: string;
   itemDesc: string;
   auctionTimeLeft: string;
+  itemPublisher:string
 }
 
 function ProductPage() {
@@ -233,6 +234,9 @@ function ProductPage() {
               <Heading mb={2} as="h2" size="2xl">
                 {productData!.itemName}
               </Heading>
+              <Text color={"gray.600"}>
+                Sold By: {productData!.itemPublisher.toUpperCase()}
+              </Text>
               {dayjs(productData!.auctionTimeLeft).fromNow().includes("ago") ? (
                 <Alert status="error" borderRadius="md" variant="left-accent">
                   <AlertIcon />
