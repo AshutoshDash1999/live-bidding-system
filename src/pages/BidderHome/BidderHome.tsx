@@ -28,25 +28,33 @@ function BidderHome() {
     );
   }
 
+  console.log(value);
+
+  console.log('bidder home');
+
   return (
     <div>
       <Navbar />
-      
-      <Box my={2} mx={6} borderRadius="md">
-        {itemDataCollection.length ? (
-          <Grid  templateColumns={{
-            base: "repeat(1, 1fr)",
-            md: "repeat(2, 1fr)",
-            lg: "repeat(3, 1fr)",
-            xl: "repeat(4, 1fr)",
-          }}
-          gap={8}>
-            {itemDataCollection?.map((item:any) => (
-              <Link to={`/product/${item.itemId}`} key={item.itemId}>
-              <ItemCard {...item} />
+
+      <Box my={2} mx={6} borderRadius='md'>
+        {value?.docs.length && value ? (
+          <Grid
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              md: 'repeat(2, 1fr)',
+              lg: 'repeat(3, 1fr)',
+              xl: 'repeat(4, 1fr)',
+            }}
+            gap={8}
+          >
+            {value?.docs.map((doc: any) => (
+              <Link to={`/product/${doc.id}`} key={doc.id}>
+                <ItemCard {...doc.data()} />
               </Link>
             ))}
-        </Grid>: ''
+          </Grid>
+        ) : (
+          ''
         )}
       </Box>
     </div>
