@@ -1,26 +1,33 @@
-import { Box, Center, Grid, Spinner, Text, VStack } from "@chakra-ui/react";
-import { collection, onSnapshot, query } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import ItemCard from "../../components/ItemCard/ItemCard";
-import Navbar from "../../components/Navbar/Navbar";
-import { db } from "../../utils/firebaseConfig";
+import { Box, Center, Grid, Spinner, Text, VStack } from '@chakra-ui/react';
+import { collection, onSnapshot, query } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import ItemCard from '../../components/ItemCard/ItemCard';
+import Navbar from '../../components/Navbar/Navbar';
+import { db } from '../../utils/firebaseConfig';
+import { useCollection } from 'react-firebase-hooks/firestore';
 
 function BidderHome() {
-  const [itemDataCollection, setItemDataCollection] = useState([]);
+  const [value, loading, error] = useCollection(collection(db, 'itemData'));
 
-  useEffect(() => {
-    const querySnap = query(collection(db, "itemData"));
-    const getData = onSnapshot(querySnap, (querySnapshot) => {
-      let itemDataArray: any = [];
-      querySnapshot.forEach((doc) => {
-        itemDataArray.push(doc.data());
-      });
-      setItemDataCollection(itemDataArray);
-    });
-    return () => getData();
-  }, []);
-  
+  if (error) {
+    return (
+      <Box my={2} mx={6} borderRadius='md'>
+        <strong>Error: {JSON.stringify(error)}</strong>
+      </Box>
+    );
+  }
+
+  if (loading) {
+    return (
+      <Center h='100vh' color='teal'>
+        <VStack spacing='10'>
+          <Text fontSize='2xl'>Loading items</Text>
+          <Spinner size='xl' />
+        </VStack>
+      </Center>
+    );
+  }
+
   return (
     <div>
       <Navbar />
@@ -39,14 +46,7 @@ function BidderHome() {
               <ItemCard {...item} />
               </Link>
             ))}
-          </Grid>
-        ) : (
-          <Center h="20vh" color="teal">
-            <VStack spacing="10">
-              <Text fontSize="2xl">No items to show</Text>
-              <Spinner size="xl" />
-            </VStack>
-          </Center>
+        </Grid>: ''
         )}
       </Box>
     </div>
