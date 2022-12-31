@@ -13,9 +13,9 @@ import {
 } from '../../features/user/userSlice';
 import { RootState } from '../../app/store';
 import { Center, Spinner, Text, VStack } from '@chakra-ui/react';
-function Home() {
-  const [user, loading, error] = useAuthState(auth);
 
+const Home = () => {
+  const [user, loading, error] = useAuthState(auth);
   const state = useSelector((state: RootState) => state.currentUserStore);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -59,13 +59,16 @@ function Home() {
     );
   }
 
-  if (state.userRole === 'seller') {
-    return <SellerDashboard />;
-  }
-
-  if (state.userRole === 'bidder') {
-    return <BidderHome />;
-  }
-}
-
+  return (
+    <>
+      {state.userRole === 'seller' ? (
+        <SellerDashboard />
+      ) : state.userRole === 'bidder' ? (
+        <BidderHome />
+      ) : (
+        ''
+      )}
+    </>
+  );
+};
 export default Home;
