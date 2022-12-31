@@ -32,11 +32,11 @@ function Home() {
         );
         const users = await getDocs(userMailQuery);
         users.forEach((doc) => {
-          dispatch(updateUserName(doc.data().firstName));
+          dispatch(
+            updateUserName(doc.data().firstName + ' ' + doc.data().lastName)
+          );
           dispatch(updateUserEmail(doc.data().mailID));
           dispatch(updateUserRole(doc.data().role));
-          dispatch(updateUserFirstName(doc.data().firstName));
-          dispatch(updateUserLastName(doc.data().lastName));
         });
         setIsLoading(false);
       } catch (error) {
