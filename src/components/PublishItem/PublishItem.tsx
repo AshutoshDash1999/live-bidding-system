@@ -36,11 +36,8 @@ function PublishItem() {
     itemPhotoURL: '',
   });
 
-  const sellerFirstName = useSelector(
-    (state: RootState) => state.currentUserStore.userFirstName
-  );
-  const sellerLastName = useSelector(
-    (state: RootState) => state.currentUserStore.userLastName
+  const sellerUserName = useSelector(
+    (state: RootState) => state.currentUserStore.userName
   );
 
   // upload image to cloudinary and get upload url
@@ -84,7 +81,7 @@ function PublishItem() {
         itemDesc: itemInfo.itemDesc,
         auctionTimeLeft: itemInfo.auctionTimeLeft,
         itemPhotoURL: itemInfo.itemPhotoURL,
-        itemPublisher: sellerFirstName + ' ' + sellerLastName,
+        itemPublisher: sellerUserName,
       };
 
       // const docRef = await addDoc(collection(db, "itemData"), {
