@@ -35,6 +35,8 @@ function Home() {
           dispatch(updateUserName(doc.data().firstName));
           dispatch(updateUserEmail(doc.data().mailID));
           dispatch(updateUserRole(doc.data().role));
+          dispatch(updateUserFirstName(doc.data().firstName));
+          dispatch(updateUserLastName(doc.data().lastName));
         });
         setIsLoading(false);
       } catch (error) {

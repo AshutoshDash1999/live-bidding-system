@@ -16,8 +16,10 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import uuid from 'react-uuid';
+import { RootState } from '../../app/store';
 import { db } from '../../utils/firebaseConfig';
 
 function PublishItem() {
@@ -33,6 +35,13 @@ function PublishItem() {
     auctionTimeLeft: '',
     itemPhotoURL: '',
   });
+
+  const sellerFirstName = useSelector(
+    (state: RootState) => state.currentUserStore.userFirstName
+  );
+  const sellerLastName = useSelector(
+    (state: RootState) => state.currentUserStore.userLastName
+  );
 
   // upload image to cloudinary and get upload url
   cloudinaryRef.current = window.cloudinary;
@@ -75,6 +84,7 @@ function PublishItem() {
         itemDesc: itemInfo.itemDesc,
         auctionTimeLeft: itemInfo.auctionTimeLeft,
         itemPhotoURL: itemInfo.itemPhotoURL,
+        itemPublisher: sellerFirstName + ' ' + sellerLastName,
       };
 
       // const docRef = await addDoc(collection(db, "itemData"), {
