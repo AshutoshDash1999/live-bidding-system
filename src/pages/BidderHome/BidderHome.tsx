@@ -21,14 +21,12 @@ function BidderHome() {
     return (
       <Center h='100vh' color='teal'>
         <VStack spacing='10'>
-          <Text fontSize='2xl'>Loading items</Text>
+          <Text fontSize='2xl'>Loading...</Text>
           <Spinner size='xl' />
         </VStack>
       </Center>
     );
   }
-
-  // console.log(value);
 
   return (
     <div>

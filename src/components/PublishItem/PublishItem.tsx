@@ -14,16 +14,13 @@ import {
   Textarea,
   useDisclosure,
   useToast,
-} from "@chakra-ui/react";
-import {
-  doc,
-  setDoc,
-} from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import uuid from "react-uuid";
-import { RootState } from "../../app/store";
-import { db } from "../../utils/firebaseConfig";
+} from '@chakra-ui/react';
+import { doc, setDoc } from 'firebase/firestore';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import uuid from 'react-uuid';
+import { RootState } from '../../app/store';
+import { db } from '../../utils/firebaseConfig';
 
 function PublishItem() {
   const cloudinaryRef = useRef<any>();
@@ -32,11 +29,11 @@ function PublishItem() {
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [itemInfo, setItemInfo] = useState({
-    itemName: "",
-    itemPrice: "",
-    itemDesc: "",
-    auctionTimeLeft: "",
-    itemPhotoURL: "",
+    itemName: '',
+    itemPrice: '',
+    itemDesc: '',
+    auctionTimeLeft: '',
+    itemPhotoURL: '',
   });
 
   const sellerFirstName = useSelector(
@@ -45,7 +42,7 @@ function PublishItem() {
   const sellerLastName = useSelector(
     (state: RootState) => state.currentUserStore.userLastName
   );
-  
+
   // upload image to cloudinary and get upload url
   cloudinaryRef.current = window.cloudinary;
   let cloudinaryWidget = window.cloudinary.createUploadWidget(
@@ -54,7 +51,7 @@ function PublishItem() {
       uploadPreset: import.meta.env.VITE_APP_CLOUDINARY_UPLOADPRESET,
     },
     (error: any, result: any) => {
-      if (!error && result && result.event === "success") {
+      if (!error && result && result.event === 'success') {
         // console.log("Done! Here is the image info: ", result.info);
         setItemInfo({
           ...itemInfo,
@@ -75,9 +72,10 @@ function PublishItem() {
     e.preventDefault();
     // setIsLoading(true);
 
-    const itemUniqueId = uuid().substring(0, 19).split("-").join("");
+    // upload image
+    const itemUniqueId = uuid().substring(0, 19).split('-').join('');
     try {
-      const docRef = doc(db, "itemData", itemUniqueId);
+      const docRef = doc(db, 'itemData', itemUniqueId);
 
       const itemData = {
         itemId: itemUniqueId,
@@ -86,7 +84,7 @@ function PublishItem() {
         itemDesc: itemInfo.itemDesc,
         auctionTimeLeft: itemInfo.auctionTimeLeft,
         itemPhotoURL: itemInfo.itemPhotoURL,
-        itemPublisher: sellerFirstName + " "+sellerLastName,
+        itemPublisher: sellerFirstName + ' ' + sellerLastName,
       };
 
       // const docRef = await addDoc(collection(db, "itemData"), {
@@ -102,32 +100,32 @@ function PublishItem() {
         .then((docRef) => {
           setIsLoading(false);
           toast({
-            title: "Your item is online now",
-            status: "success",
+            title: 'Your item is online now',
+            status: 'success',
             duration: 2000,
             isClosable: false,
           });
         })
         .catch((error) => {
           console.log(error);
-          console.error("Error adding item: ", e);
+          console.error('Error adding item: ', e);
           setIsLoading(false);
           toast({
-            title: "Error adding item",
+            title: 'Error adding item',
             description: `${e}`,
-            status: "error",
+            status: 'error',
             duration: 2000,
             isClosable: false,
           });
         });
     } catch (error) {
       console.log(error);
-      console.error("Error adding item: ", e);
+      console.error('Error adding item: ', e);
       setIsLoading(false);
       toast({
-        title: "Error adding item",
+        title: 'Error adding item',
         description: `${e}`,
-        status: "error",
+        status: 'error',
         duration: 2000,
         isClosable: false,
       });
@@ -138,8 +136,8 @@ function PublishItem() {
 
   return (
     <div>
-      <Box my={2} mx={6} borderRadius="md">
-        <Button onClick={onOpen} colorScheme="teal">
+      <Box my={2} mt={4} mx={6} borderRadius='md'>
+        <Button onClick={onOpen} colorScheme='teal'>
           Publish a new item
         </Button>
       </Box>
@@ -160,8 +158,8 @@ function PublishItem() {
             <FormControl isRequired marginBottom={4}>
               <FormLabel>Item Name</FormLabel>
               <Input
-                type="text"
-                name="itemName"
+                type='text'
+                name='itemName'
                 defaultValue={itemInfo.itemName}
                 onChange={handleInput}
               />
@@ -170,7 +168,7 @@ function PublishItem() {
             <FormControl isRequired marginBottom={4}>
               <FormLabel>Item Base Price</FormLabel>
               <Input
-                name="itemPrice"
+                name='itemPrice'
                 defaultValue={itemInfo.itemPrice}
                 onChange={handleInput}
               ></Input>
@@ -179,8 +177,8 @@ function PublishItem() {
             <FormControl isRequired marginBottom={4}>
               <FormLabel>Item Description</FormLabel>
               <Textarea
-                placeholder=""
-                name="itemDesc"
+                placeholder=''
+                name='itemDesc'
                 defaultValue={itemInfo.itemDesc}
                 onChange={handleInput}
               />
@@ -189,10 +187,10 @@ function PublishItem() {
             <FormControl isRequired>
               <FormLabel>Auction Ending date-time</FormLabel>
               <Input
-                placeholder="Select Date and Time"
-                size="md"
-                type="datetime-local"
-                name="auctionTimeLeft"
+                placeholder='Select Date and Time'
+                size='md'
+                type='datetime-local'
+                name='auctionTimeLeft'
                 defaultValue={itemInfo.auctionTimeLeft}
                 onChange={handleInput}
               />
@@ -201,11 +199,11 @@ function PublishItem() {
 
           <ModalFooter>
             <Button
-              colorScheme="blue"
+              colorScheme='blue'
               mr={3}
               onClick={itemPublishClickHandler}
               isLoading={isLoading}
-              loadingText="Publishing..."
+              loadingText='Publishing...'
             >
               Publish
             </Button>

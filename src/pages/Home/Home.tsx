@@ -1,63 +1,71 @@
-import BidderHome from "../BidderHome/BidderHome";
-import SellerDashboard from "../SellerDashboard/SellerDashboard";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../utils/firebaseConfig";
-import { auth } from "../../utils/firebaseConfig";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import BidderHome from '../BidderHome/BidderHome';
+import SellerDashboard from '../SellerDashboard/SellerDashboard';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../utils/firebaseConfig';
+import { auth } from '../../utils/firebaseConfig';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   updateUserName,
   updateUserEmail,
   updateUserRole,
-  updateUserFirstName,
-  updateUserLastName
-} from "../../features/user/userSlice";
-import { RootState } from "../../app/store";
+} from '../../features/user/userSlice';
+import { RootState } from '../../app/store';
+import { Center, Spinner, Text, VStack } from '@chakra-ui/react';
 function Home() {
   const [user, loading, error] = useAuthState(auth);
-  const [userEmail, setUserEmail] = useState("");
-  const userRole = useSelector(
-    (state: RootState) => state.currentUserStore.userRole
-  );
-  const dispatch = useDispatch();
-  // const { userRole } = useSelector((store: any) => store.userInfo); // object destructuring...when variable name and key we want to access are same
 
-  useEffect(() => {
-    if (user) {
-      setUserEmail(user.email as string);
-    }
-  }, [user]);
+  const state = useSelector((state: RootState) => state.currentUserStore);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getUserRoleQuery = async () => {
       try {
-        const usersDataRef = collection(db, "userData");
+        setIsLoading(true);
+        const usersDataRef = collection(db, 'userData');
         const userMailQuery = await query(
           usersDataRef,
-          where("mailID", "==", userEmail)
+          where('mailID', '==', user?.email)
         );
         const users = await getDocs(userMailQuery);
         users.forEach((doc) => {
-          // console.log(doc.data());
           dispatch(updateUserName(doc.data().firstName));
           dispatch(updateUserEmail(doc.data().mailID));
           dispatch(updateUserRole(doc.data().role));
           dispatch(updateUserFirstName(doc.data().firstName));
           dispatch(updateUserLastName(doc.data().lastName));
         });
+        setIsLoading(false);
       } catch (error) {
-        console.warn("Error in getUserRoleQuery in Home.tsx file: ", error);
+        console.warn('Error in getUserRoleQuery in Home.tsx file: ', error);
+        setIsLoading(false);
       }
     };
-    getUserRoleQuery();
-  }, [userEmail]);
 
-  // console.log(userRole);
+    if (user) getUserRoleQuery();
+  }, []);
 
-  return (
-    <div>{userRole === "seller" ? <SellerDashboard /> : <BidderHome />}</div>
-  );
+  if (isLoading) {
+    return (
+      <Center h='100vh' color='teal'>
+        <VStack spacing='10'>
+          <Text fontSize='2xl'>Loading...</Text>
+          <Spinner size='xl' />
+        </VStack>
+      </Center>
+    );
+  }
+
+  if (state.userRole === 'seller') {
+    return <SellerDashboard />;
+  }
+
+  if (state.userRole === 'bidder') {
+    return <BidderHome />;
+  }
 }
 
 export default Home;
