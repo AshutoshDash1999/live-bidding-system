@@ -12,16 +12,15 @@ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/newUserRegistration" element={<Registration />} />
-        <Route path="/product/:productID" element={<ProductPage />} />
+        <Route path='/' element={<LandingPage />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
+        <Route path='/newUserRegistration' element={<Registration />} />
+        <Route path='/product/:productID' element={<ProductPage />} />
 
         {/* protected routes */}
         <Route path='/' element={<PrivateRoute />}>
           <Route path='home' element={<Home />} />
-          <Route path='no' element={<p> cjkwefweckne vueejvb</p>} />
         </Route>
 
         <Route path='*' element={<PageNotFound />} />
