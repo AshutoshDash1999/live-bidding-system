@@ -235,7 +235,7 @@ function ProductPage() {
                 {productData!.itemName}
               </Heading>
               <Text color={"gray.600"}>
-                Sold By: {productData!.itemPublisher.toUpperCase()}
+                Sold By: {productData!.itemPublisher}
               </Text>
               {dayjs(productData!.auctionTimeLeft).fromNow().includes("ago") ? (
                 <Alert status="error" borderRadius="md" variant="left-accent">

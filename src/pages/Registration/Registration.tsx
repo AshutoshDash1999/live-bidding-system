@@ -133,7 +133,7 @@ function Registration() {
               </FormControl>
 
               {/* first name */}
-              <FormControl isInvalid={errors.fname}>
+              <FormControl isInvalid={!!errors.fname}>
                 <FormLabel htmlFor='fname'>First name</FormLabel>
                 <Input
                   id='fname'
@@ -152,7 +152,7 @@ function Registration() {
               </FormControl>
 
               {/* last name */}
-              <FormControl isInvalid={errors.lname}>
+              <FormControl isInvalid={!!errors.lname}>
                 <FormLabel htmlFor='lname'>Last name</FormLabel>
                 <Input
                   id='lname'
@@ -172,7 +172,7 @@ function Registration() {
 
               {/* mobile number */}
 
-              <FormControl isInvalid={errors.mobile}>
+              <FormControl isInvalid={!!errors.mobile}>
                 <FormLabel htmlFor='mobile'>Mobile Number</FormLabel>
                 <InputGroup>
                   <InputLeftElement
@@ -215,7 +215,7 @@ function Registration() {
               </FormControl>
 
               {/* bank */}
-              <FormControl isInvalid={errors.bank}>
+              <FormControl isInvalid={!!errors.bank}>
                 <FormLabel htmlFor='bank'>Bank Account Number</FormLabel>
                 <Input
                   placeholder='xxx-xxx-xxx-xxx'
