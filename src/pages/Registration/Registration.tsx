@@ -1,4 +1,4 @@
-import { AtSignIcon, PhoneIcon } from '@chakra-ui/icons';
+import { AtSignIcon, PhoneIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -12,29 +12,22 @@ import {
   Radio,
   RadioGroup,
   Stack,
+  Textarea,
   useToast,
-} from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { auth, db } from '../../utils/firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useForm } from 'react-hook-form';
+} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { auth, db } from "../../utils/firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useForm } from "react-hook-form";
 
 function Registration() {
   const toast = useToast();
   const navigate = useNavigate();
-  const [registerUserInfo, setRegisterUserInfo] = useState({
-    role: 'bidder',
-    fname: '',
-    lname: '',
-    mobileNumber: '',
-    mailId: '',
-    bankAccountNo: '',
-    yearlyIncome: '',
-  });
+  const [userRole, setUserRole] = useState("bidder");
   const [isLoading, setIsLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState("");
   const [user, loading, error] = useAuthState(auth);
 
   const {
@@ -44,11 +37,12 @@ function Registration() {
     setValue,
   } = useForm({
     defaultValues: {
-      fname: '',
-      lname: '',
-      mobile: '',
-      email: userEmail ? userEmail : '',
-      bank: '',
+      fname: "",
+      lname: "",
+      mobile: "",
+      email: userEmail ? userEmail : "",
+      bank: "",
+      address:""
     },
   });
 
@@ -61,7 +55,7 @@ function Registration() {
   // set user email dynamically
   useEffect(() => {
     if (userEmail) {
-      setValue('email', userEmail);
+      setValue("email", userEmail);
     }
   }, [userEmail]);
 
@@ -72,31 +66,30 @@ function Registration() {
 
     setIsLoading(true);
     try {
-      const docRef = await addDoc(collection(db, 'userData'), {
-        role: registerUserInfo.role,
-        firstName: registerUserInfo.fname,
-        lastName: registerUserInfo.lname,
-        mobileNumber: registerUserInfo.mobileNumber,
+      const docRef = await addDoc(collection(db, "userData"), {
+        role: userRole,
+        firstName: values.fname,
+        mobileNumber: values.mobile,
         mailID: userEmail,
-        bankAccountNo: registerUserInfo.bankAccountNo,
-        yearlyIncome: registerUserInfo.yearlyIncome,
+        bankAccountNo: values.bank,
+        address:values.address,
       });
       // console.log("Document written with ID: ", docRef.id);
       setIsLoading(false);
       toast({
-        title: 'Your information is saved',
-        status: 'success',
+        title: "Your information is saved",
+        status: "success",
         duration: 2000,
         isClosable: false,
       });
       navigate('/home');
     } catch (e) {
-      console.error('Error adding document: ', e);
+      console.error("Error adding document: ", e);
       setIsLoading(false);
       toast({
-        title: 'Error adding document',
+        title: "Error adding document",
         description: `${e}`,
-        status: 'error',
+        status: "error",
         duration: 2000,
         isClosable: false,
       });
@@ -105,27 +98,22 @@ function Registration() {
 
   return (
     <Box>
-      <Flex alignItems='center' justifyContent='center' height='100vh'>
-        <Box width='100%' maxW={'md'} mx='4'>
+      <Flex alignItems="center" justifyContent="center" height="100vh">
+        <Box width="100%" maxW={"md"} mx="4">
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={3}>
               <FormControl isRequired>
                 <RadioGroup
-                  name='role'
-                  value={registerUserInfo.role}
-                  onChange={(value) =>
-                    setRegisterUserInfo({
-                      ...registerUserInfo,
-                      role: value,
-                    })
-                  }
+                  name="role"
+                  value={userRole}
+                  onChange={(value) => setUserRole(value)}
                 >
-                  <Stack direction={'row'}>
+                  <Stack direction={"row"}>
                     <FormLabel>Choose your role:</FormLabel>
-                    <Radio name='role' id='bidder' value='bidder'>
+                    <Radio name="role" id="bidder" value="bidder">
                       Bidder
                     </Radio>
-                    <Radio name='role' id='seller' value='seller'>
+                    <Radio name="role" id="seller" value="seller">
                       Seller
                     </Radio>
                   </Stack>
@@ -133,16 +121,16 @@ function Registration() {
               </FormControl>
 
               {/* first name */}
-              <FormControl isInvalid={!!errors.fname}>
-                <FormLabel htmlFor='fname'>First name</FormLabel>
+              <FormControl isInvalid={!!errors.fname} isRequired>
+                <FormLabel htmlFor="fname">Full Name</FormLabel>
                 <Input
-                  id='fname'
-                  placeholder='John'
-                  {...register('fname', {
-                    required: 'This is required',
+                  id="fname"
+                  placeholder="John Doe"
+                  {...register("fname", {
+                    required: "This is required",
                     minLength: {
                       value: 4,
-                      message: 'Minimum length should be 4',
+                      message: "Minimum length should be 4",
                     },
                   })}
                 />
@@ -152,7 +140,7 @@ function Registration() {
               </FormControl>
 
               {/* last name */}
-              <FormControl isInvalid={!!errors.lname}>
+              {/* <FormControl isInvalid={!!errors.lname}>
                 <FormLabel htmlFor='lname'>Last name</FormLabel>
                 <Input
                   id='lname'
@@ -168,25 +156,25 @@ function Registration() {
                 <FormErrorMessage>
                   {errors.lname && errors.lname.message}
                 </FormErrorMessage>
-              </FormControl>
+              </FormControl> */}
 
               {/* mobile number */}
 
-              <FormControl isInvalid={!!errors.mobile}>
-                <FormLabel htmlFor='mobile'>Mobile Number</FormLabel>
+              <FormControl isInvalid={!!errors.mobile} isRequired>
+                <FormLabel htmlFor="mobile">Mobile Number</FormLabel>
                 <InputGroup>
                   <InputLeftElement
-                    pointerEvents='none'
-                    children={<PhoneIcon color='gray.300' />}
+                    pointerEvents="none"
+                    children={<PhoneIcon color="gray.300" />}
                   />
                   <Input
-                    id='mobile'
-                    placeholder='9090124523'
-                    {...register('mobile', {
-                      required: 'This is required',
+                    id="mobile"
+                    placeholder="9090124523"
+                    {...register("mobile", {
+                      required: "This is required",
                       minLength: {
                         value: 10,
-                        message: 'Minimum length should be 10',
+                        message: "Minimum length should be 10",
                       },
                     })}
                   />
@@ -197,16 +185,16 @@ function Registration() {
               </FormControl>
 
               {/* email */}
-              <FormControl>
-                <FormLabel htmlFor='email'>Mail Id</FormLabel>
+              <FormControl isRequired>
+                <FormLabel htmlFor="email">Mail Id</FormLabel>
                 <InputGroup>
                   <InputLeftElement
-                    pointerEvents='none'
-                    children={<AtSignIcon color='gray.300' />}
+                    pointerEvents="none"
+                    children={<AtSignIcon color="gray.300" />}
                   />
                   <Input
-                    id='email'
-                    {...register('email', {
+                    id="email"
+                    {...register("email", {
                       disabled: true,
                       value: userEmail,
                     })}
@@ -215,16 +203,16 @@ function Registration() {
               </FormControl>
 
               {/* bank */}
-              <FormControl isInvalid={!!errors.bank}>
-                <FormLabel htmlFor='bank'>Bank Account Number</FormLabel>
+              <FormControl isInvalid={!!errors.bank} isRequired>
+                <FormLabel htmlFor="bank">Bank Account Number</FormLabel>
                 <Input
-                  placeholder='xxx-xxx-xxx-xxx'
-                  id='bank'
-                  {...register('bank', {
-                    required: 'This is required',
+                  placeholder="xxx-xxx-xxx-xxx"
+                  id="bank"
+                  {...register("bank", {
+                    required: "This is required",
                     minLength: {
                       value: 10,
-                      message: 'Minimum length should be 10',
+                      message: "Minimum length should be 10",
                     },
                   })}
                 />
@@ -232,13 +220,33 @@ function Registration() {
                   {errors.bank && errors.bank.message}
                 </FormErrorMessage>
               </FormControl>
-              <Flex alignItems='center' justifyContent='space-between'>
+
+              {/* address */}
+              <FormControl isInvalid={!!errors.address} isRequired>
+                <FormLabel htmlFor="address">Full Address</FormLabel>
+                <Textarea
+                  placeholder="Ex. Pećinci, Kolubara, Serbia - 15906"
+                  id="address"
+                  {...register("address", {
+                    required: "This is required",
+                    minLength: {
+                      value: 5,
+                      message: "Please write complete address",
+                    },
+                  })}
+                />
+                <FormErrorMessage>
+                  {errors.address && errors.address.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              <Flex alignItems="center" justifyContent="space-between">
                 <Button
-                  width='100%'
-                  colorScheme='blue'
-                  type='submit'
+                  width="100%"
+                  colorScheme="blue"
+                  type="submit"
                   isLoading={isLoading}
-                  loadingText='Saving'
+                  loadingText="Saving"
                 >
                   Save
                 </Button>
