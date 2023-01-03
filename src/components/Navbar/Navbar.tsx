@@ -16,6 +16,8 @@ import { auth } from '../../utils/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Logout from './Logout';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../app/store';
 
 const NavItems = [
   {
@@ -29,42 +31,18 @@ function Navbar() {
   const navigate = useNavigate();
   const toast = useToast();
   const [user, loading, error] = useAuthState(auth);
-  const [showUserName, setUserName] = useState<string>('');
+  const showUserName = useSelector(
+    (state: RootState) => state.currentUserStore.userName
+  );
   const [showUserPhoto, setUserPhoto] = useState<string>('');
 
   useEffect(() => {
     if (user) {
-      setUserName(user.displayName as string);
-      setUserPhoto(user.photoURL as string);
-    } else if (loading) {
-      setUserName('Loading Name...');
+      user.photoURL && setUserPhoto(user.photoURL as string);
     }
-  }, [user, loading]);
+  }, [user]);
 
   const navbarBg = useColorModeValue('gray.200', 'whiteAlpha.50');
-
-  const logoutHandler = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        toast({
-          title: 'Logout successfull.',
-          status: 'success',
-          duration: 2000,
-          isClosable: false,
-        });
-        navigate('/');
-      })
-      .catch((error) => {
-        toast({
-          title: error.message,
-          description: error.code,
-          status: 'error',
-          duration: 2000,
-          isClosable: false,
-        });
-      });
-  };
 
   return (
     <Box my={2} mx={6} bg={navbarBg} borderRadius='md'>
@@ -80,7 +58,14 @@ function Navbar() {
         <HStack spacing='24px'>
           <Button colorScheme='teal' variant='ghost'>
             Welcome, {showUserName}{' '}
-            <Avatar name={showUserName} ml='2' size='sm' src={showUserPhoto} />
+            {showUserPhoto && (
+              <Avatar
+                name={showUserName}
+                ml='3'
+                size='sm'
+                src={showUserPhoto}
+              />
+            )}
           </Button>
           <ThemeSwitcher />
           <Logout />
