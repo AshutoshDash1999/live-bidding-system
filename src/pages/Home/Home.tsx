@@ -1,18 +1,18 @@
-import BidderHome from "../BidderHome/BidderHome";
-import SellerDashboard from "../SellerDashboard/SellerDashboard";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../utils/firebaseConfig";
-import { auth } from "../../utils/firebaseConfig";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import BidderHome from '../BidderHome/BidderHome';
+import SellerDashboard from '../SellerDashboard/SellerDashboard';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../utils/firebaseConfig';
+import { auth } from '../../utils/firebaseConfig';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   updateUserName,
   updateUserEmail,
   updateUserRole,
-} from "../../features/user/userSlice";
-import { RootState } from "../../app/store";
-import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
+} from '../../features/user/userSlice';
+import { RootState } from '../../app/store';
+import { Center, Spinner, Text, VStack } from '@chakra-ui/react';
 
 const Home = () => {
   const [user, loading, error] = useAuthState(auth);
@@ -25,10 +25,10 @@ const Home = () => {
     const getUserRoleQuery = async () => {
       try {
         setIsLoading(true);
-        const usersDataRef = collection(db, "userData");
+        const usersDataRef = collection(db, 'userData');
         const userMailQuery = await query(
           usersDataRef,
-          where("mailID", "==", user?.email)
+          where('mailID', '==', user?.email)
         );
         const users = await getDocs(userMailQuery);
         users.forEach((doc) => {
@@ -38,7 +38,7 @@ const Home = () => {
         });
         setIsLoading(false);
       } catch (error) {
-        console.warn("Error in getUserRoleQuery in Home.tsx file: ", error);
+        console.warn('Error in getUserRoleQuery in Home.tsx file: ', error);
         setIsLoading(false);
       }
     };
@@ -48,10 +48,10 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <Center h="100vh" color="teal">
-        <VStack spacing="10">
-          <Text fontSize="2xl">Loading...</Text>
-          <Spinner size="xl" />
+      <Center h='100vh' color='teal'>
+        <VStack spacing='10'>
+          <Text fontSize='2xl'>Loading...</Text>
+          <Spinner size='xl' />
         </VStack>
       </Center>
     );
@@ -59,12 +59,12 @@ const Home = () => {
 
   return (
     <>
-      {state.userRole === "seller" ? (
+      {state.userRole === 'seller' ? (
         <SellerDashboard />
-      ) : state.userRole === "bidder" ? (
+      ) : state.userRole === 'bidder' ? (
         <BidderHome />
       ) : (
-        ""
+        ''
       )}
     </>
   );

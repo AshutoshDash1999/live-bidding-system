@@ -80,7 +80,7 @@ function Login() {
       .catch((error) => {
         toast({
           title: error.code,
-          description:error.message,
+          description: error.message,
           status: 'error',
           duration: 3000,
           isClosable: false,
@@ -172,6 +172,7 @@ function Login() {
               />
               <Input
                 pr='4.5rem'
+                name='password'
                 type={showPassword ? 'text' : 'password'}
                 placeholder='Enter password'
                 defaultValue={userSignInInfo.password}
