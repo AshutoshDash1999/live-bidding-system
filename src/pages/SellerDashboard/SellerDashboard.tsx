@@ -1,5 +1,4 @@
 import { Box, Center, Grid, Spinner, Text, VStack } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import { db } from '../../utils/firebaseConfig';
 import { collection, query, onSnapshot, doc, setDoc } from 'firebase/firestore';
@@ -7,8 +6,13 @@ import ItemCard from '../../components/ItemCard/ItemCard';
 import { Link } from 'react-router-dom';
 import PublishItem from '../../components/PublishItem/PublishItem';
 import { useCollection } from 'react-firebase-hooks/firestore';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../app/store';
 
 function SellerDashboard() {
+  const userName = useSelector(
+    (state: RootState) => state.currentUserStore.userName
+  );
   const [value, loading, error] = useCollection(collection(db, 'itemData'));
 
   if (error) {
@@ -45,11 +49,13 @@ function SellerDashboard() {
             }}
             gap={8}
           >
-            {value?.docs.map((doc: any) => (
-              <Link to={`/product/${doc.id}`} key={doc.id}>
-                <ItemCard {...doc.data()} />
-              </Link>
-            ))}
+            {value?.docs
+              .filter((doc) => doc.data().itemPublisher === userName)
+              .map((doc: any) => (
+                <Link to={`/product/${doc.id}`} key={doc.id}>
+                  <ItemCard {...doc.data()} />
+                </Link>
+              ))}
           </Grid>
         ) : (
           ''
