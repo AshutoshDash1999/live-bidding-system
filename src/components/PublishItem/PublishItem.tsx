@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Modal,
@@ -16,7 +17,8 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import uuid from 'react-uuid';
 import { RootState } from '../../app/store';
@@ -35,6 +37,88 @@ function PublishItem() {
     auctionTimeLeft: '',
     itemPhotoURL: '',
   });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data: any) => {
+    if (!data.itemPhotoURL) {
+      toast({
+        title: 'Please upload the item image',
+        status: 'error',
+        duration: 2000,
+        isClosable: false,
+      });
+    } else {
+      const itemUniqueId = uuid().substring(0, 19).split('-').join('');
+      try {
+        const docRef = doc(db, 'itemData', itemUniqueId);
+
+        const itemData = {
+          itemId: itemUniqueId,
+          itemName: data.itemName,
+          itemPrice: data.itemPrice,
+          itemDesc: data.itemDesc,
+          auctionTimeLeft: data.auctionTimeLeft,
+          itemPhotoURL: data.itemPhotoURL,
+          itemPublisher: sellerUserName,
+        };
+
+        // const docRef = await addDoc(collection(db, "itemData"), {
+        //   itemId: uuid(),
+        //   itemName: itemInfo.itemName,
+        //   itemPrice: itemInfo.itemPrice,
+        //   itemDesc: itemInfo.itemDesc,
+        //   auctionTimeLeft: itemInfo.auctionTimeLeft,
+        //   itemPhotoURL: itemInfo.itemPhotoURL,
+        // });
+        // console.log("Document written with ID: ", docRef.id);
+        setDoc(docRef, itemData)
+          .then((docRef) => {
+            setIsLoading(false);
+            toast({
+              title: 'Your item is online now',
+              status: 'success',
+              duration: 2000,
+              isClosable: false,
+            });
+            setItemInfo({
+              itemName: '',
+              itemPrice: '',
+              itemDesc: '',
+              auctionTimeLeft: '',
+              itemPhotoURL: '',
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            console.error('Error adding item: ', e);
+            setIsLoading(false);
+            toast({
+              title: 'Error adding item',
+              description: `${e}`,
+              status: 'error',
+              duration: 2000,
+              isClosable: false,
+            });
+          });
+      } catch (error) {
+        console.log(error);
+        console.error('Error adding item: ', e);
+        setIsLoading(false);
+        toast({
+          title: 'Error adding item',
+          description: `${e}`,
+          status: 'error',
+          duration: 2000,
+          isClosable: false,
+        });
+      }
+
+      onClose();
+    }
+  };
 
   const sellerUserName = useSelector(
     (state: RootState) => state.currentUserStore.userName
@@ -58,77 +142,11 @@ function PublishItem() {
     }
   );
 
-  const handleInput = (event: any) => {
-    setItemInfo({
-      ...itemInfo,
-      [event.target.name]: event.target.value,
-    });
-  };
-
   async function itemPublishClickHandler(e: any) {
     e.preventDefault();
     // setIsLoading(true);
 
     // upload image
-    const itemUniqueId = uuid().substring(0, 19).split('-').join('');
-    try {
-      const docRef = doc(db, 'itemData', itemUniqueId);
-
-      const itemData = {
-        itemId: itemUniqueId,
-        itemName: itemInfo.itemName,
-        itemPrice: itemInfo.itemPrice,
-        itemDesc: itemInfo.itemDesc,
-        auctionTimeLeft: itemInfo.auctionTimeLeft,
-        itemPhotoURL: itemInfo.itemPhotoURL,
-        itemPublisher: sellerUserName,
-      };
-
-      // const docRef = await addDoc(collection(db, "itemData"), {
-      //   itemId: uuid(),
-      //   itemName: itemInfo.itemName,
-      //   itemPrice: itemInfo.itemPrice,
-      //   itemDesc: itemInfo.itemDesc,
-      //   auctionTimeLeft: itemInfo.auctionTimeLeft,
-      //   itemPhotoURL: itemInfo.itemPhotoURL,
-      // });
-      // console.log("Document written with ID: ", docRef.id);
-      setDoc(docRef, itemData)
-        .then((docRef) => {
-          setIsLoading(false);
-          toast({
-            title: 'Your item is online now',
-            status: 'success',
-            duration: 2000,
-            isClosable: false,
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          console.error('Error adding item: ', e);
-          setIsLoading(false);
-          toast({
-            title: 'Error adding item',
-            description: `${e}`,
-            status: 'error',
-            duration: 2000,
-            isClosable: false,
-          });
-        });
-    } catch (error) {
-      console.log(error);
-      console.error('Error adding item: ', e);
-      setIsLoading(false);
-      toast({
-        title: 'Error adding item',
-        description: `${e}`,
-        status: 'error',
-        duration: 2000,
-        isClosable: false,
-      });
-    }
-
-    onClose();
   }
 
   return (
@@ -144,68 +162,96 @@ function PublishItem() {
         <ModalContent>
           <ModalHeader>Publish a new auction</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl isRequired marginBottom={4}>
-              <FormLabel>Add Item Image</FormLabel>
-              <Button onClick={() => cloudinaryWidget.open()}>
-                Click to Upload Item Image
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <ModalBody pb={6}>
+              <FormControl isRequired marginBottom={4}>
+                <FormLabel>Add Item Image</FormLabel>
+                <Button onClick={() => cloudinaryWidget.open()}>
+                  Click to Upload Item Image
+                </Button>
+              </FormControl>
+
+              {/* item name */}
+
+              <FormControl marginBottom={4} isInvalid={!!errors.itemName}>
+                <FormLabel htmlFor='itemName'>First itemName</FormLabel>
+                <Input
+                  id='itemName'
+                  placeholder='itemName'
+                  {...register('itemName', {
+                    required: 'This is required',
+                  })}
+                />
+                <FormErrorMessage>
+                  {errors.itemName && errors.itemName.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              {/* price */}
+              <FormControl isInvalid={!!errors.itemPrice} marginBottom={4}>
+                <FormLabel htmlFor='itemPrice'>Item Base Price</FormLabel>
+                <Input
+                  type='number'
+                  id='itemPrice'
+                  {...register('itemPrice', {
+                    required: 'This is required',
+                  })}
+                ></Input>
+                <FormErrorMessage>
+                  {errors.itemPrice && errors.itemPrice.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              {/* description */}
+              <FormControl isInvalid={!!errors.itemDesc} marginBottom={4}>
+                <FormLabel htmlFor='itemDesc'>Item Description</FormLabel>
+                <Textarea
+                  id='itemDesc'
+                  placeholder='Enter item description'
+                  {...register('itemDesc', {
+                    required: 'This is required',
+                  })}
+                />
+                <FormErrorMessage>
+                  {errors.itemDesc && errors.itemDesc.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              <FormControl
+                isInvalid={!!errors.auctionTimeLeft}
+                marginBottom={4}
+              >
+                <FormLabel htmlFor='auctionTimeLeft'>
+                  Auction Ending date-time
+                </FormLabel>
+                <Input
+                  placeholder='Select Date and Time'
+                  size='md'
+                  id='auctionTimeLeft'
+                  type='datetime-local'
+                  {...register('auctionTimeLeft', {
+                    required: 'This is required',
+                  })}
+                />
+                <FormErrorMessage>
+                  {errors.auctionTimeLeft && errors.auctionTimeLeft.message}
+                </FormErrorMessage>
+              </FormControl>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                colorScheme='blue'
+                mr={3}
+                type='submit'
+                isLoading={isLoading}
+                loadingText='Publishing...'
+              >
+                Publish
               </Button>
-            </FormControl>
-
-            <FormControl isRequired marginBottom={4}>
-              <FormLabel>Item Name</FormLabel>
-              <Input
-                type='text'
-                name='itemName'
-                defaultValue={itemInfo.itemName}
-                onChange={handleInput}
-              />
-            </FormControl>
-
-            <FormControl isRequired marginBottom={4}>
-              <FormLabel>Item Base Price</FormLabel>
-              <Input
-                name='itemPrice'
-                defaultValue={itemInfo.itemPrice}
-                onChange={handleInput}
-              ></Input>
-            </FormControl>
-
-            <FormControl isRequired marginBottom={4}>
-              <FormLabel>Item Description</FormLabel>
-              <Textarea
-                placeholder=''
-                name='itemDesc'
-                defaultValue={itemInfo.itemDesc}
-                onChange={handleInput}
-              />
-            </FormControl>
-
-            <FormControl isRequired>
-              <FormLabel>Auction Ending date-time</FormLabel>
-              <Input
-                placeholder='Select Date and Time'
-                size='md'
-                type='datetime-local'
-                name='auctionTimeLeft'
-                defaultValue={itemInfo.auctionTimeLeft}
-                onChange={handleInput}
-              />
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme='blue'
-              mr={3}
-              onClick={itemPublishClickHandler}
-              isLoading={isLoading}
-              loadingText='Publishing...'
-            >
-              Publish
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
+              <Button onClick={onClose}>Cancel</Button>
+            </ModalFooter>
+          </form>
         </ModalContent>
       </Modal>
     </div>
