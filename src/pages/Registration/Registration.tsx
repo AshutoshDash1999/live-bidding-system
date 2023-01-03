@@ -21,6 +21,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
+import uuid from 'react-uuid';
 
 function Registration() {
   const toast = useToast();
@@ -66,7 +67,9 @@ function Registration() {
 
     setIsLoading(true);
     try {
+      const userUniqueId = uuid().substring(0, 19).split('-').join('');
       const docRef = addDoc(collection(db, 'userData'), {
+        userId: userUniqueId,
         displayName: values.fname,
         role: userRole,
         firstName: values.fname,
