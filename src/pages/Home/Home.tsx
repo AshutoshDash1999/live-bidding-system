@@ -16,7 +16,7 @@ import { Center, Spinner, Text, VStack } from '@chakra-ui/react';
 
 const Home = () => {
   const [user, loading, error] = useAuthState(auth);
-  const state = useSelector((state: RootState) => state.currentUserStore);
+  const currentUser = useSelector((state: RootState) => state.currentUserStore);
   const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
@@ -59,9 +59,9 @@ const Home = () => {
 
   return (
     <>
-      {state.userRole === 'seller' ? (
+      {currentUser.userRole === 'seller' ? (
         <SellerDashboard />
-      ) : state.userRole === 'bidder' ? (
+      ) : currentUser.userRole === 'bidder' ? (
         <BidderHome />
       ) : (
         ''
