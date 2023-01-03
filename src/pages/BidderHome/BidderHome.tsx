@@ -1,5 +1,5 @@
 import { Box, Center, Grid, Spinner, Text, VStack } from '@chakra-ui/react';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import ItemCard from '../../components/ItemCard/ItemCard';
 import Navbar from '../../components/Navbar/Navbar';

@@ -22,18 +22,20 @@ import {
   Text,
   useColorModeValue,
   useToast,
-} from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar/Navbar";
-import { CheckIcon, StarIcon } from "@chakra-ui/icons";
-import { useParams } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db, rtdb } from "../../utils/firebaseConfig";
-import { child, get, ref, set } from "firebase/database";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import Navbar from '../../components/Navbar/Navbar';
+import { CheckIcon, StarIcon } from '@chakra-ui/icons';
+import { useParams } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db, rtdb } from '../../utils/firebaseConfig';
+import { child, get, ref, set } from 'firebase/database';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { RootState } from '../../app/store';
+import { useSelector } from 'react-redux';
 
 interface ProductDataType {
   itemId: string;
@@ -42,20 +44,23 @@ interface ProductDataType {
   itemPhotoURL: string;
   itemDesc: string;
   auctionTimeLeft: string;
-  itemPublisher:string
+  itemPublisher: string;
 }
 
 function ProductPage() {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
-  const [newBidderPrice, setNewBidderPrice] = useState("");
+  const [newBidderPrice, setNewBidderPrice] = useState('');
   const [productData, setProductData] = useState({} as ProductDataType);
-  const [highestBiddedPrice, setHighestBiddedPrice] = useState("0");
+  const [highestBiddedPrice, setHighestBiddedPrice] = useState('0');
   const { productID } = useParams();
   const [user, loading, error] = useAuthState(auth);
-  const [highestBidderName, setHighestBidderName] = useState("no one");
-  const [highestBidderEmail, setHighestBidderEmail] = useState<string>("");
-  const [currentUserEmail, setCurrentUserEmail] = useState<string>("");
+  const [highestBidderName, setHighestBidderName] = useState('no one');
+  const [highestBidderEmail, setHighestBidderEmail] = useState<string>('');
+  const [currentUserEmail, setCurrentUserEmail] = useState<string>('');
+  const role = useSelector(
+    (state: RootState) => state.currentUserStore.userRole
+  );
 
   const priceUpdateHandler = async () => {
     if (parseInt(newBidderPrice) > parseInt(productData?.itemPrice)) {
@@ -64,7 +69,7 @@ function ProductPage() {
         try {
           const itemReferenceInRTDB = ref(
             rtdb,
-            "product/" + `product_id_${productData!.itemId}`
+            'product/' + `product_id_${productData!.itemId}`
           );
           if (user) {
             await set(itemReferenceInRTDB, {
@@ -74,49 +79,49 @@ function ProductPage() {
             });
           }
           get(
-            child(ref(rtdb), "product/" + `product_id_${productData!.itemId}`)
+            child(ref(rtdb), 'product/' + `product_id_${productData!.itemId}`)
           )
             .then((snapshot) => {
               if (snapshot.exists()) {
-                setHighestBidderName(snapshot.val()["accountHolderName"]);
-                setHighestBiddedPrice(snapshot.val()["highestBiddedPrice"]);
+                setHighestBidderName(snapshot.val()['accountHolderName']);
+                setHighestBiddedPrice(snapshot.val()['highestBiddedPrice']);
                 console.log(snapshot.val());
               } else {
-                console.log("No data available");
+                console.log('No data available');
               }
             })
             .catch((error) => {
               console.error(error);
             });
           toast({
-            title: "Bidding successfull.",
-            status: "success",
+            title: 'Bidding successfull.',
+            status: 'success',
             duration: 2000,
             isClosable: false,
           });
         } catch (error) {
           toast({
-            title: "Bidding un-successfull.",
+            title: 'Bidding un-successfull.',
             description: `${error}`,
-            status: "error",
+            status: 'error',
             duration: 2000,
             isClosable: false,
           });
         }
       } else {
         toast({
-          title: "Bidding un-successfull.",
-          description: "Please bid higher than highest bidded price",
-          status: "error",
+          title: 'Bidding un-successfull.',
+          description: 'Please bid higher than highest bidded price',
+          status: 'error',
           duration: 2000,
           isClosable: false,
         });
       }
     } else {
       toast({
-        title: "Bidding un-successfull.",
-        description: "Please bid higher than base price",
-        status: "error",
+        title: 'Bidding un-successfull.',
+        description: 'Please bid higher than base price',
+        status: 'error',
         duration: 2000,
         isClosable: false,
       });
@@ -126,7 +131,7 @@ function ProductPage() {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const docRef = doc(db, "itemData", `${productID?.toString()}`);
+        const docRef = doc(db, 'itemData', `${productID?.toString()}`);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           // console.log(docSnap.data());
@@ -134,17 +139,17 @@ function ProductPage() {
         } else {
           // doc.data() will be undefined in this case
           toast({
-            title: "Product not found",
-            status: "error",
+            title: 'Product not found',
+            status: 'error',
             duration: 2000,
             isClosable: false,
           });
         }
       } catch (error) {
         toast({
-          title: "Something went wrong.",
+          title: 'Something went wrong.',
           description: `${error}`,
-          status: "error",
+          status: 'error',
           duration: 2000,
           isClosable: false,
         });
@@ -156,7 +161,7 @@ function ProductPage() {
       toast({
         title: "Couldn't fetch the data.",
         description: `${err}`,
-        status: "error",
+        status: 'error',
         duration: 2000,
         isClosable: false,
       })
@@ -173,15 +178,15 @@ function ProductPage() {
   useEffect(() => {
     try {
       const dbRef = ref(rtdb);
-      get(child(dbRef, "product/" + `product_id_${productData!.itemId}`))
+      get(child(dbRef, 'product/' + `product_id_${productData!.itemId}`))
         .then((snapshot) => {
           if (snapshot.exists()) {
             console.log(snapshot.val());
-            setHighestBidderName(snapshot.val()["accountHolderName"]);
-            setHighestBiddedPrice(snapshot.val()["highestBiddedPrice"]);
-            setHighestBidderEmail(snapshot.val()["accountHolderEmail"]);
+            setHighestBidderName(snapshot.val()['accountHolderName']);
+            setHighestBiddedPrice(snapshot.val()['highestBiddedPrice']);
+            setHighestBidderEmail(snapshot.val()['accountHolderEmail']);
           } else {
-            console.log("No data available");
+            console.log('No data available');
           }
         })
         .catch((error) => {
@@ -202,43 +207,43 @@ function ProductPage() {
       <Navbar />
 
       {isLoading ? (
-        <Center h="50vh">
-          <Spinner color="teal" size="xl" />
+        <Center h='50vh'>
+          <Spinner color='teal' size='xl' />
         </Center>
       ) : (
         <>
           <Flex
-            alignItems={"center"}
-            justifyContent="center"
-            gap={{ base: "8", md: "10" }}
-            direction={{ base: "column", md: "row" }}
+            alignItems={'center'}
+            justifyContent='center'
+            gap={{ base: '8', md: '10' }}
+            direction={{ base: 'column', md: 'row' }}
           >
             <Spacer />
-            <Box boxSize="lg" rounded="lg" p="4">
+            <Box boxSize='lg' rounded='lg' p='4'>
               <Image
-                rounded="lg"
-                boxSize={{ base: "xs", md: "md" }}
+                rounded='lg'
+                boxSize={{ base: 'xs', md: 'md' }}
                 src={productData!.itemPhotoURL}
-                objectFit="cover"
-                height={"100%"}
-                fallbackSrc="https://via.placeholder.com/450?text=Loading+Image..."
+                objectFit='cover'
+                height={'100%'}
+                fallbackSrc='https://via.placeholder.com/450?text=Loading+Image...'
               />
             </Box>
             <Spacer />
 
-            <Box  p="4">
-              <Text color={"gray.600"}>
+            <Box p='4'>
+              <Text color={'gray.600'}>
                 Product ID: {productData!.itemId.toUpperCase()}
               </Text>
 
-              <Heading mb={2} as="h2" size="2xl">
+              <Heading mb={2} as='h2' size='2xl'>
                 {productData!.itemName}
               </Heading>
-              <Text color={"gray.600"}>
+              <Text color={'gray.600'}>
                 Sold By: {productData!.itemPublisher}
               </Text>
-              {dayjs(productData!.auctionTimeLeft).fromNow().includes("ago") ? (
-                <Alert status="error" borderRadius="md" variant="left-accent">
+              {dayjs(productData!.auctionTimeLeft).fromNow().includes('ago') ? (
+                <Alert status='error' borderRadius='md' variant='left-accent'>
                   <AlertIcon />
                   <AlertTitle>Timer expired!</AlertTitle>
                   <AlertDescription>
@@ -246,64 +251,72 @@ function ProductPage() {
                   </AlertDescription>
                 </Alert>
               ) : (
-                <HStack spacing="24px">
+                <HStack spacing='24px'>
                   <Box
-                    background={useColorModeValue("gray.200", "whiteAlpha.100")}
+                    background={useColorModeValue('gray.200', 'whiteAlpha.100')}
                     p={4}
-                    borderRadius={"md"}
+                    borderRadius={'md'}
                   >
-                    <Text fontSize="lg">Auction ending in</Text>
-                    <Text fontSize="2xl" fontWeight="bold">
+                    <Text fontSize='lg'>Auction ending in</Text>
+                    <Text fontSize='2xl' fontWeight='bold'>
                       {dayjs(productData!.auctionTimeLeft).fromNow()}
                     </Text>
                   </Box>
                   <Box>
-                    <Text fontSize="lg">
+                    <Text fontSize='lg'>
                       Auction Price: ₹
                       <span>{productData!.itemPrice.toLocaleString()}</span>
                     </Text>
-                    <InputGroup size="lg">
+                    <InputGroup size='lg'>
                       <InputLeftElement
-                        pointerEvents="none"
-                        color="gray.300"
-                        fontSize="1.2em"
-                        children="₹"
+                        pointerEvents='none'
+                        color='gray.300'
+                        fontSize='1.2em'
+                        children='₹'
                       />
                       <Input
                         onChange={(e) =>
                           setNewBidderPrice(e.target.value as string)
                         }
-                        size="lg"
-                        pr="4.5rem"
-                        placeholder="Bid your price"
+                        size='lg'
+                        pr='4.5rem'
+                        placeholder='Bid your price'
+                        disabled={role === 'seller'}
                       />
-                      <InputRightElement width="4.5rem">
+                      <InputRightElement width='4.5rem'>
                         <Button
-                          mr="0.5rem"
-                          h="2rem"
-                          size="lg"
+                          mr='0.5rem'
+                          h='2rem'
+                          size='lg'
                           onClick={priceUpdateHandler}
+                          disabled={role === 'seller'}
                         >
                           Bid
                         </Button>
                       </InputRightElement>
                     </InputGroup>
+                    {role === 'seller' && (
+                      <Alert status='error' mt={2} rounded='md'>
+                        <AlertIcon />
+                        Sellers can't bid on items
+                      </Alert>
+                    )}
                   </Box>
                 </HStack>
               )}
 
               {highestBidderEmail === currentUserEmail &&
-              dayjs(productData!.auctionTimeLeft).fromNow().includes("ago") ? (
+              dayjs(productData!.auctionTimeLeft).fromNow().includes('ago') ? (
                 <>
                   <Alert
-                    my="2"
-                    status="info"
-                    borderRadius="md"
-                    variant="left-accent"
+                    my='2'
+                    status='info'
+                    borderRadius='md'
+                    variant='left-accent'
                   >
                     <AlertDescription>
                       <HStack>
-                        <Text fontSize="lg">
+                        <Text fontSize='lg'>
                           Congrats!!! You have won the bid. 🥳🎉🎊
                         </Text>
                         {/* <Button colorScheme="blue">Confirm Purchase</Button> */}
@@ -313,24 +326,24 @@ function ProductPage() {
                 </>
               ) : (
                 <Alert
-                  my="2"
-                  status="success"
-                  borderRadius="md"
-                  variant="left-accent"
+                  my='2'
+                  status='success'
+                  borderRadius='md'
+                  variant='left-accent'
                 >
                   <AlertDescription>
                     <HStack>
-                      <Text fontSize="lg">Last highest bidded price is</Text>
+                      <Text fontSize='lg'>Last highest bidded price is</Text>
                       <Text
-                        fontWeight="bold"
-                        color={useColorModeValue("green.800", "green.500")}
+                        fontWeight='bold'
+                        color={useColorModeValue('green.800', 'green.500')}
                       >
                         ₹ {highestBiddedPrice}
                       </Text>
                       <span>by</span>
                       <Text
-                        fontWeight="bold"
-                        color={useColorModeValue("green.800", "green.500")}
+                        fontWeight='bold'
+                        color={useColorModeValue('green.800', 'green.500')}
                       >
                         {highestBidderName}
                       </Text>
@@ -339,10 +352,10 @@ function ProductPage() {
                 </Alert>
               )}
               <Box>
-                <Heading fontSize="md">Product Features</Heading>
+                <Heading fontSize='md'>Product Features</Heading>
                 <List spacing={3}>
                   <ListItem>
-                    <ListIcon as={CheckIcon} color="green.500" />
+                    <ListIcon as={CheckIcon} color='green.500' />
                     {productData!.itemDesc}
                   </ListItem>
 
