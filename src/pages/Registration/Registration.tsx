@@ -47,6 +47,8 @@ function Registration() {
     },
   });
 
+  console.log('Errors: ', errors);
+
   useEffect(() => {
     if (user) {
       setUserEmail(user.email as string);
@@ -198,19 +200,17 @@ function Registration() {
                     {...register('mobile', {
                       required: 'This is required',
                       pattern: {
-                        value: /^(\+\d{1,3}[- ]?)?\d{10}$/,
-                        message:
-                          'This is not a valid mobile phone to me, try again!',
+                        value: /^[6-9]\d{9}$/,
+                        message: 'Provide valid number',
+                      },
+                      maxLength: {
+                        value: 10,
+                        message: "That's way too long",
                       },
                       minLength: {
                         value: 10,
-                        message: 'Minimum length should be 10',
+                        message: "That's way too short",
                       },
-                      maxLength: {
-                        value: 12,
-                        message: 'Maximum length should be 12',
-                      },
-                      valueAsNumber: true,
                     })}
                   />
                 </InputGroup>
