@@ -68,7 +68,7 @@ function Registration() {
     setIsLoading(true);
     const userUniqueId = uuid().substring(0, 19).split('-').join('');
     try {
-      const docRef = addDoc(collection(db, 'userData',userUniqueId), {
+      const docRef = addDoc(collection(db, 'userData', userUniqueId), {
         userId: userUniqueId,
         displayName: values.fname,
         role: userRole,

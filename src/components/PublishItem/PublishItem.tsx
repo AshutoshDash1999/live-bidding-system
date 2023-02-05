@@ -14,7 +14,7 @@ import {
   ModalOverlay,
   Textarea,
   useDisclosure,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRef, useState } from 'react';
@@ -23,6 +23,13 @@ import { useSelector } from 'react-redux';
 import uuid from 'react-uuid';
 import { RootState } from '../../app/store';
 import { db } from '../../utils/firebaseConfig';
+
+type FormValues = {
+  itemName: string;
+  itemPrice: string;
+  itemDesc: string;
+  auctionTimeLeft: Date;
+};
 
 function PublishItem() {
   const cloudinaryRef = useRef<any>();
@@ -41,7 +48,7 @@ function PublishItem() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<FormValues>();
   const onSubmit = (data: any) => {
     if (!data.itemPhotoURL) {
       toast({
@@ -92,24 +99,22 @@ function PublishItem() {
             });
           })
           .catch((error) => {
-            console.log(error);
-            console.error('Error adding item: ', e);
+            console.error('Error adding item: ', error);
             setIsLoading(false);
             toast({
               title: 'Error adding item',
-              description: `${e}`,
+              description: `${error}`,
               status: 'error',
               duration: 2000,
               isClosable: false,
             });
           });
       } catch (error) {
-        console.log(error);
-        console.error('Error adding item: ', e);
+        console.error('Error adding item: ', error);
         setIsLoading(false);
         toast({
           title: 'Error adding item',
-          description: `${e}`,
+          description: `${error}`,
           status: 'error',
           duration: 2000,
           isClosable: false,
