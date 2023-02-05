@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import {
   Badge,
@@ -14,11 +13,12 @@ import {
   Stack,
   Text,
   useColorModeValue,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { deleteDoc, doc } from 'firebase/firestore';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { db } from '../../utils/firebaseConfig';
@@ -84,7 +84,7 @@ function ItemCard({
   };
 
   return (
-    <GridItem w='100%'>
+    <GridItem w='100%' h='100%'>
       <Box
         borderWidth='1px'
         borderColor={useColorModeValue('gray.200', 'whiteAlpha.50')}
