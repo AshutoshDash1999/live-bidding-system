@@ -143,9 +143,19 @@ function Registration() {
                   placeholder="John Doe"
                   {...register("fname", {
                     required: "This is required",
+                    pattern: {
+                      value: /^[a-zA-Z]+$/,
+                      message:
+                        "Numbers in name field... Seriously??!!",
+                    },
+                    maxLength: {
+                      value: 50,
+                      message:
+                        "That's way too long to be a real name, try again",
+                    },
                     minLength: {
                       value: 4,
-                      message: "Minimum length should be 4",
+                      message: "Name too short. Try to add full name.",
                     },
                   })}
                 />
@@ -188,9 +198,17 @@ function Registration() {
                     placeholder="9876543210"
                     {...register("mobile", {
                       required: "This is required",
+                      pattern: {
+                        value: /^(\+\d{1,3}[- ]?)?\d{10}$/,
+                        message: "This is not a valid mobile phone to me, try again!"
+                      }, 
                       minLength: {
                         value: 10,
                         message: "Minimum length should be 10",
+                      },
+                      maxLength: {
+                        value: 12,
+                        message: "Maximum length should be 12",
                       },
                       valueAsNumber: true,
                     })}
