@@ -79,6 +79,7 @@ function Registration() {
         mailID: userEmail,
         bankAccountNo: values.bank,
         address: values.address,
+        isRegistered: true,
       };
 
       setDoc(docRef, itemData)
@@ -144,9 +145,8 @@ function Registration() {
                   {...register("fname", {
                     required: "This is required",
                     pattern: {
-                      value: /^[a-zA-Z]+$/,
-                      message:
-                        "Numbers in name field... Seriously??!!",
+                      value: /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/,
+                      message: "Please write your name properly.",
                     },
                     maxLength: {
                       value: 50,
@@ -164,27 +164,6 @@ function Registration() {
                 </FormErrorMessage>
               </FormControl>
 
-              {/* last name */}
-              {/* <FormControl isInvalid={!!errors.lname}>
-                <FormLabel htmlFor='lname'>Last name</FormLabel>
-                <Input
-                  id='lname'
-                  placeholder='Doe'
-                  {...register('lname', {
-                    required: 'This is required',
-                    minLength: {
-                      value: 4,
-                      message: 'Minimum length should be 4',
-                    },
-                  })}
-                />
-                <FormErrorMessage>
-                  {errors.lname && errors.lname.message}
-                </FormErrorMessage>
-              </FormControl> */}
-
-              {/* mobile number */}
-
               <FormControl isInvalid={!!errors.mobile} isRequired>
                 <FormLabel htmlFor="mobile">Mobile Number</FormLabel>
                 <InputGroup>
@@ -199,9 +178,11 @@ function Registration() {
                     {...register("mobile", {
                       required: "This is required",
                       pattern: {
-                        value: /^(\+\d{1,3}[- ]?)?\d{10}$/,
-                        message: "This is not a valid mobile phone to me, try again!"
-                      }, 
+                        value:
+                          /^\+?\d{1,3}[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/,
+                        message:
+                          "This is not a valid mobile phone to me, try again!",
+                      },
                       minLength: {
                         value: 10,
                         message: "Minimum length should be 10",
@@ -245,11 +226,17 @@ function Registration() {
                   id="bank"
                   {...register("bank", {
                     required: "This is required",
+                    pattern: {
+                      value: /^[0-9a-zA-Z]{6,30}$/,
+                      message:
+                        "This is not a valid mobile phone to me, try again!",
+                    },
                     minLength: {
                       value: 10,
                       message: "Minimum length should be 10",
                     },
                   })}
+                  type="number"
                 />
                 <FormErrorMessage>
                   {errors.bank && errors.bank.message}
