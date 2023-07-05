@@ -1,21 +1,34 @@
-# Live Bidding System
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Tech Stack Used
-Frontend: TypeScript + React + Vite
+## Getting Started
 
-## How to run the project?
+First, run the development server:
 
-1. Install Vite
-`npm create vite@latest`
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
 
-2. Star and Fork this repo
-![Star and fork this repo](https://user-images.githubusercontent.com/46455250/194689583-973eb468-8344-4721-9c7a-6e28e2c276ce.png)
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-3. Clone the repo
-`git clone https://github.com/{Your_Github_username}/live-bidding-system`
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-4. Go to the directory and install all the dependency
-`npm i`
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-5. Run the server by typing and hit enter
-`npm run dev`
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
