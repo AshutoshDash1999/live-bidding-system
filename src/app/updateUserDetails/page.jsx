@@ -6,25 +6,22 @@ import {
     CardBody,
     CardFooter,
     CardHeader,
-    Checkbox,
     Input,
     Menu,
     MenuHandler,
     MenuItem,
     MenuList,
-    Option,
-    Select,
-    Switch,
     Typography
 } from "@material-tailwind/react";
-import { doc, setDoc } from "firebase/firestore";
-import { useState } from "react";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { useDocument } from "react-firebase-hooks/firestore";
 import { toast, Toaster } from "react-hot-toast";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CountriesInfo from "../../utils/country_dial_info.json";
-import { db } from "../../utils/firebaseConfig";
+import { db, firebaseApp } from "../../utils/firebaseConfig";
 
-const Registration = () => {
+const UpdateUserDetails = () => {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -38,28 +35,46 @@ const Registration = () => {
     bussinessLicenseNumber: "",
     isAgreeToTnC: false,
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [country, setCountry] = useState(0);
 
   const { flag, dial_code } = CountriesInfo[country];
 
+  const [value, loading, error] = useDocument(
+    doc(getFirestore(firebaseApp), "userData", "ashu@mail.com"),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
+  );
+
+  console.log("value", value?.data());
+
+  useEffect(() => {
+    if (value) {
+      setUserData(value?.data());
+    }
+  }, [value]);
+
   const inputHandler = (event) => {
     setUserData({ ...userData, [event.target.name]: event.target.value });
   };
+
+  console.log("userData", userData);
 
   const submitUserData = async () => {
     try {
       setIsSubmitting(true);
       await setDoc(doc(db, "userData", userData?.email), userData)
         .then(() => {
-          toast.success("Account created successfully");
+          toast.success("Account details updated successfully");
         })
         .catch(() => {
           toast.error(error?.message);
         });
-    } catch (error) {
-      console.log("Error", error);
+    } catch (er) {
+      console.log("Error", er);
     } finally {
       setIsSubmitting(false);
     }
@@ -76,14 +91,10 @@ const Registration = () => {
           className="mb-4 grid h-28 place-items-center"
         >
           <Typography variant="h3" color="white" className="text-center">
-            Account Registeration
+            Account Details Update
           </Typography>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <Select label="Select Your Role">
-            <Option>Buyer</Option>
-            <Option>Selller</Option>
-          </Select>
           <Input
             label="Name"
             size="lg"
@@ -188,48 +199,12 @@ const Registration = () => {
               name="country"
             />
           </div>
-
-          <Switch
-            label={
-              <div>
-                <Typography color="blue-gray" className="font-medium">
-                  Do you have a business license?
-                </Typography>
-              </div>
-            }
-            ripple={true}
-            onChange={(e) =>
-              setUserData({
-                ...userData,
-                haveBussinessLicense: e.target.checked,
-              })
-            }
-          />
-
-          {userData?.haveBussinessLicense ? (
-            <Input
-              label="Business License Number"
-              size="lg"
-              value={userData?.bussinessLicenseNumber}
-              onChange={inputHandler}
-              name="bussinessLicenseNumber"
-            />
-          ) : null}
-
-          <div className="-ml-2.5">
-            <Checkbox
-              label="I agree to all Terms and Conditions"
-              onChange={(e) =>
-                setUserData({ ...userData, isAgreeToTnC: e.target.value })
-              }
-            />
-          </div>
         </CardBody>
 
         <CardFooter className="pt-0">
           <CustomButton
-            text="Submit"
-            loadingText="Submiting..."
+            text="Update"
+            loadingText="Updating..."
             onClick={submitUserData}
             loading={isSubmitting}
           />
@@ -238,4 +213,4 @@ const Registration = () => {
     </div>
   );
 };
-export default Registration;
+export default UpdateUserDetails;

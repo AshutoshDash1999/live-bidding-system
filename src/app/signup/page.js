@@ -1,15 +1,12 @@
 "use client";
 
-import CustomButton from "@/components/CustomButton/CustomButton";
 import { auth } from "@/utils/firebaseConfig";
 import {
-    Button,
     Card,
     CardBody,
     CardFooter,
     CardHeader,
     Input,
-    Spinner,
     Typography
 } from "@material-tailwind/react";
 import Link from "next/link";
@@ -17,8 +14,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import toast, { Toaster } from "react-hot-toast";
+import CustomButton from "../../components/CustomButton/CustomButton";
 
 export default function Register() {
+    
   function reducer(state, action) {
     switch (action.type) {
       case "update__email": {
