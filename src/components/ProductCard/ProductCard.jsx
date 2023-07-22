@@ -10,10 +10,10 @@ import {
 } from "@material-tailwind/react";
 import Image from "next/image";
 
-export default function ProductCard() {
+export default function ProductCard({productImage, productName, price, description, url}) {
   return (
     <Card className="w-96">
-      <CardHeader shadow={false} floated={false} className="h-96">
+      <CardHeader shadow={false} floated={false} className="h-60">
         <Image
           src="https://images.unsplash.com/photo-1629367494173-c78a56567877?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=927&q=80"
           className="w-full h-full object-cover"
@@ -46,7 +46,7 @@ export default function ProductCard() {
           fullWidth={true}
           className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:shadow-none hover:scale-105 focus:shadow-none focus:scale-105 active:scale-100"
         >
-          Add to Cart
+          Buy
         </Button>
       </CardFooter>
     </Card>

@@ -19,8 +19,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useUploadFile } from "react-firebase-hooks/storage";
 import { toast, Toaster } from "react-hot-toast";
-import CustomButton from "../../components/CustomButton/CustomButton";
 import { db, firebaseApp } from "../../utils/firebaseConfig";
+import CustomButton from "../CustomButton/CustomButton";
 
 const storage = getStorage(firebaseApp);
 
@@ -108,11 +108,9 @@ const PublishItem = () => {
     }
   };
 
-  console.log("snapshot", snapshot);
-
   // get uploaded image url from firebase storage
   useEffect(() => {
-    if (productImageFile?.fileName) {
+    if (productImageFile?.fileName && isImageUploadSuccess) {
       const starsRef = ref(storage, productImageFile?.fileName);
 
       getDownloadURL(starsRef)
@@ -121,10 +119,9 @@ const PublishItem = () => {
         })
         .catch((error) => toast.error(`${error?.title}: ${error?.message}`));
     }
-  }, [isImageUploadSuccess]);
+  }, [isImageUploadSuccess, productImageFile?.fileName]);
 
   // upload product data to firestore
-
   const productDataUpload = async () => {
     const productId = crypto.randomUUID().split("-")[0];
 
@@ -138,7 +135,7 @@ const PublishItem = () => {
     await setDoc(doc(db, "productData", productId), payload)
       .then(() => {
         toast.success("Items published successfully");
-        setOpenPublishItemForm((current) => !current);
+        setOpenPublishItemForm(false);
       })
       .catch((error) => {
         toast.error(error?.message);
@@ -161,6 +158,7 @@ const PublishItem = () => {
       uploadProductImage();
     } catch (error) {
       console.log("Error", error);
+      setIsSubmitting(false);
     }
   };
 

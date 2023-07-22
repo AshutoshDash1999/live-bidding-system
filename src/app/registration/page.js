@@ -54,6 +54,7 @@ const Registration = () => {
       await setDoc(doc(db, "userData", userData?.email), userData)
         .then(() => {
           toast.success("Account created successfully");
+          router.push("/dashboard");
         })
         .catch(() => {
           toast.error(error?.message);

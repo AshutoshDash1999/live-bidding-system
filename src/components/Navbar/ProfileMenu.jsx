@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    Avatar,
     Button,
     Menu,
     MenuHandler,
@@ -13,35 +12,38 @@ import {
 import React, { useState } from "react";
 
 import {
-    Bars2Icon, ChevronDownIcon, CodeBracketSquareIcon, Cog6ToothIcon, CubeTransparentIcon, InboxArrowDownIcon,
-    LifebuoyIcon,
-    PowerIcon,
-    RocketLaunchIcon, Square3Stack3DIcon, UserCircleIcon
+    ChevronDownIcon,
+    PencilSquareIcon,
+    PowerIcon
 } from "@heroicons/react/24/outline";
+import { useSignOut } from "react-firebase-hooks/auth";
+import { toast } from "react-hot-toast";
+import { auth } from "../../utils/firebaseConfig";
 
 const ProfileMenu = () => {
   const profileMenuItems = [
     {
-      label: "My Profile",
-      icon: UserCircleIcon,
-    },
-    {
       label: "Edit Profile",
-      icon: Cog6ToothIcon,
-    },
-    {
-      label: "Inbox",
-      icon: InboxArrowDownIcon,
-    },
-    {
-      label: "Help",
-      icon: LifebuoyIcon,
+      icon: PencilSquareIcon,
     },
     {
       label: "Sign Out",
       icon: PowerIcon,
     },
   ];
+
+  const [signOut, loading, error] = useSignOut(auth);
+
+  if (error) {
+    toast.error(error?.message);
+  }
+
+  const signOutHandler = async () => {
+    const success = await signOut();
+    if (success) {
+      toast.success("You are sign out!");
+    }
+  };
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeMenu = () => setIsMenuOpen(false);
@@ -53,13 +55,14 @@ const ProfileMenu = () => {
           color="blue-gray"
           className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
         >
-          <Avatar
-            variant="circular"
-            size="sm"
-            alt="candice wu"
-            className="border border-blue-500 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-          />
+          <div className="flex flex-col justify-start py-2 px-8 items-start">
+            <Typography variant="h6" color="blue" textGradient>
+              Tania Andrew
+            </Typography>
+            <Typography variant="small" color="gray" className="font-normal">
+              Bidder
+            </Typography>
+          </div>
           <ChevronDownIcon
             strokeWidth={2.5}
             className={`h-3 w-3 transition-transform ${
@@ -74,7 +77,7 @@ const ProfileMenu = () => {
           return (
             <MenuItem
               key={label}
-              onClick={closeMenu}
+              onClick={label === "Sign Out" ? signOutHandler : null}
               className={`flex items-center gap-2 rounded ${
                 isLastItem
                   ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
