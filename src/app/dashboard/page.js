@@ -1,9 +1,15 @@
-import Link from "next/link";
+"use client";
+
 import Appbar from "../../components/Navbar/pages";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import PublishItem from "../../components/PublishItem/PublishItem";
+import useStore from "../../store/useStore";
 
-const page = () => {
+const Dashboard = () => {
+  const { userData } = useStore();
+
+  console.log("userData", userData)
+
   return (
     <div className="p-4">
       <Appbar />
@@ -12,4 +18,4 @@ const page = () => {
     </div>
   );
 };
-export default page;
+export default Dashboard;
