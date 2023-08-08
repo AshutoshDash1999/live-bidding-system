@@ -125,11 +125,11 @@ const PublishItem = () => {
     }
   }, [isImageUploadSuccess, productImageFile?.fileName]);
 
-  console.log("productImageUrl", productImageUrl)
+  console.log("productImageUrl", productImageUrl);
 
-  console.log("productImageFile", productImageFile)
+  console.log("productImageFile", productImageFile);
 
-  console.log("productData", productData)
+  console.log("productData", productData);
 
   // upload product data to firestore
   const productDataUpload = async () => {
@@ -145,6 +145,20 @@ const PublishItem = () => {
     await setDoc(doc(db, "productData", productId), payload)
       .then(() => {
         toast.success("Items published successfully");
+        setProductData({
+          ...productData,
+          productName: "",
+          productDescription: "",
+          productImage: "",
+          productPrice: "",
+          publisher: loggedInEmail,
+          productBidPrice: "",
+        });
+        setProductImageFile({
+          ...productImageFile,
+          fileName: "",
+          imageFile: "",
+        });
         setOpenPublishItemForm(false);
       })
       .catch((error) => {
@@ -153,15 +167,14 @@ const PublishItem = () => {
   };
 
   useEffect(() => {
-      try {
-        productDataUpload();
-      } catch (error) {
-        console.log("Error", error);
-      } finally {
-        setIsSubmitting(false);
-      }
+    try {
+      productDataUpload();
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      setIsSubmitting(false);
     }
-  , [productImageUrl]);
+  }, [productImageUrl]);
 
   const handlePublishItem = async () => {
     if (
