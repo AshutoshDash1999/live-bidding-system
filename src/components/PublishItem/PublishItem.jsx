@@ -1,5 +1,6 @@
 "use client";
 
+import useStore from "@/store/useStore";
 import {
     Button,
     Card,
@@ -25,13 +26,16 @@ import CustomButton from "../CustomButton/CustomButton";
 const storage = getStorage(firebaseApp);
 
 const PublishItem = () => {
+  const { loggedInEmail } = useStore();
+
   const [openPublishItemForm, setOpenPublishItemForm] = useState(false);
   const [productData, setProductData] = useState({
     productName: "",
     productDescription: "",
     productImage: "",
     productPrice: "",
-    publisher: "ashu@mail.com",
+    publisher: loggedInEmail,
+    productBidPrice: "",
   });
   const [productImage, setProductImage] = useState("");
   const [productImageUrl, setProductImageUrl] = useState("");
@@ -121,6 +125,12 @@ const PublishItem = () => {
     }
   }, [isImageUploadSuccess, productImageFile?.fileName]);
 
+  console.log("productImageUrl", productImageUrl)
+
+  console.log("productImageFile", productImageFile)
+
+  console.log("productData", productData)
+
   // upload product data to firestore
   const productDataUpload = async () => {
     const productId = crypto.randomUUID().split("-")[0];
@@ -143,24 +153,42 @@ const PublishItem = () => {
   };
 
   useEffect(() => {
-    try {
-      productDataUpload();
-    } catch (error) {
-      console.log("Error", error);
-    } finally {
-      setIsSubmitting(false);
+      try {
+        productDataUpload();
+      } catch (error) {
+        console.log("Error", error);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
-  }, [productImageUrl]);
+  , [productImageUrl]);
 
   const handlePublishItem = async () => {
-    try {
-      setIsSubmitting(true);
-      uploadProductImage();
-    } catch (error) {
-      console.log("Error", error);
-      setIsSubmitting(false);
+    if (
+      !!productData?.productName &&
+      !!productData?.productDescription &&
+      !!productImageFile?.imageFile &&
+      !!productData?.productPrice
+    ) {
+      try {
+        setIsSubmitting(true);
+        uploadProductImage();
+      } catch (error) {
+        console.log("Error", error);
+        setIsSubmitting(false);
+      }
+    } else {
+      toast.error("Incomplete Data");
     }
   };
+
+  console.log("!!productData?.productName", !!productData?.productName);
+  console.log(
+    "!!productData?.productDescription",
+    !!productData?.productDescription
+  );
+  console.log("productImageFile?.imageFile", productImageFile?.imageFile);
+  console.log("!!productData?.productPrice", !!productData?.productPrice);
 
   return (
     <>

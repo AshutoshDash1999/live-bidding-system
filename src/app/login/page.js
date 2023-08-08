@@ -24,11 +24,11 @@ export default function Login() {
     useSignInWithEmailAndPassword(auth);
   const { setLoggedInEmail } = useStore();
 
-  if (user?.user?.email) {
-    toast.success(`Signing in as: ${user?.user?.email}`);
-    setLoggedInEmail(user?.user?.email);
-    redirect("/retrieveData");
-  }
+    if (user?.user?.email) {
+        toast.success(`Signing in as: ${user?.user?.email}`);
+        setLoggedInEmail(user?.user?.email);
+        redirect("/retrieveData");
+    }
 
   if (error) {
     toast.error(`${error.name}: ${error.message}`);

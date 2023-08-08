@@ -37,7 +37,10 @@ const Registration = () => {
     haveBussinessLicense: false,
     bussinessLicenseNumber: "",
     isAgreeToTnC: false,
+    role: "buyer",
   });
+
+  console.log("userData", userData);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [country, setCountry] = useState(0);
@@ -81,9 +84,14 @@ const Registration = () => {
           </Typography>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <Select label="Select Your Role">
-            <Option>Buyer</Option>
-            <Option>Selller</Option>
+          <Select
+            label="Select Your Role"
+            onChange={(e) => setUserData({ ...userData, role: e })}
+            name="role"
+            value={userData?.role}
+          >
+            <Option value="buyer">Buyer</Option>
+            <Option value="seller">Selller</Option>
           </Select>
           <Input
             label="Name"
@@ -216,15 +224,6 @@ const Registration = () => {
               name="bussinessLicenseNumber"
             />
           ) : null}
-
-          <div className="-ml-2.5">
-            <Checkbox
-              label="I agree to all Terms and Conditions"
-              onChange={(e) =>
-                setUserData({ ...userData, isAgreeToTnC: e.target.value })
-              }
-            />
-          </div>
         </CardBody>
 
         <CardFooter className="pt-0">

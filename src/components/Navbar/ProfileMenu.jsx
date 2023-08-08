@@ -9,28 +9,23 @@ import {
     Typography
 } from "@material-tailwind/react";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
+import useStore from "@/store/useStore";
 import {
     ChevronDownIcon,
     PencilSquareIcon,
     PowerIcon
 } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSignOut } from "react-firebase-hooks/auth";
 import { toast } from "react-hot-toast";
 import { auth } from "../../utils/firebaseConfig";
 
 const ProfileMenu = () => {
-  const profileMenuItems = [
-    {
-      label: "Edit Profile",
-      icon: PencilSquareIcon,
-    },
-    {
-      label: "Sign Out",
-      icon: PowerIcon,
-    },
-  ];
+  const router = useRouter();
+  const { setLoggedInEmail, setUserData } = useStore();
 
   const [signOut, loading, error] = useSignOut(auth);
 
@@ -42,6 +37,9 @@ const ProfileMenu = () => {
     const success = await signOut();
     if (success) {
       toast.success("You are sign out!");
+      setUserData({});
+      setLoggedInEmail("");
+      router.push("/");
     }
   };
 
@@ -72,33 +70,23 @@ const ProfileMenu = () => {
         </Button>
       </MenuHandler>
       <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon }, key) => {
-          const isLastItem = key === profileMenuItems.length - 1;
-          return (
-            <MenuItem
-              key={label}
-              onClick={label === "Sign Out" ? signOutHandler : null}
-              className={`flex items-center gap-2 rounded ${
-                isLastItem
-                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  : ""
-              }`}
-            >
-              {React.createElement(icon, {
-                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                strokeWidth: 2,
-              })}
-              <Typography
-                as="span"
-                variant="small"
-                className="font-normal"
-                color={isLastItem ? "red" : "inherit"}
-              >
-                {label}
-              </Typography>
-            </MenuItem>
-          );
-        })}
+        <MenuItem className={`flex items-center gap-2 rounded`}>
+          <Link href="/updateUserDetails" className="flex gap-2 items-center">
+            <PencilSquareIcon className="h-4 w-4" />
+            <Typography as="span" variant="small" className="font-normal">
+              Edit Profile
+            </Typography>
+          </Link>
+        </MenuItem>
+        <MenuItem
+          className={`flex items-center gap-2 rounded text-red-600`}
+          onClick={() => signOutHandler()}
+        >
+          <PowerIcon className="h-4 w-4" />
+          <Typography as="span" variant="small" className="font-normal">
+            Sign Out
+          </Typography>
+        </MenuItem>
       </MenuList>
     </Menu>
   );
