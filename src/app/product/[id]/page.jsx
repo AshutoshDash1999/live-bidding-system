@@ -1,10 +1,26 @@
 "use client";
 
+import { firebaseApp } from "@/utils/firebaseConfig";
 import { Button, Input } from "@material-tailwind/react";
+import { getAuth } from "firebase/auth";
 import Image from "next/image";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import Appbar from "../../../components/Navbar/pages";
 
+const auth = getAuth(firebaseApp);
+
 const ProductPage = () => {
+      // check if a user is authenticated or not
+  const [authUser, loading, error] = useAuthState(auth);
+
+  useEffect(() => {
+    if (!authUser?.email) {
+      redirect("/login");
+    }
+  }, [authUser]);
+  
   return (
     <div className="p-4">
       <Appbar />

@@ -11,7 +11,8 @@ import {
     Input,
     Progress,
     Spinner,
-    Typography
+    Typography,
+    Typographyw
 } from "@material-tailwind/react";
 import Textarea from "@material-tailwind/react/components/Textarea";
 import { doc, setDoc } from "firebase/firestore";
@@ -119,26 +120,23 @@ const PublishItem = () => {
 
       getDownloadURL(starsRef)
         .then((url) => {
-          setProductImageUrl(url);
+          //   setProductImageUrl(url);
+
+          // image url and then upload the product data
+          productDataUpload(url);
         })
         .catch((error) => toast.error(`${error?.title}: ${error?.message}`));
     }
   }, [isImageUploadSuccess, productImageFile?.fileName]);
 
-  console.log("productImageUrl", productImageUrl);
-
-  console.log("productImageFile", productImageFile);
-
-  console.log("productData", productData);
-
   // upload product data to firestore
-  const productDataUpload = async () => {
+  const productDataUpload = async (imageUrl) => {
     const productId = crypto.randomUUID().split("-")[0];
 
     const payload = {
       ...productData,
       productId,
-      productImage: productImageUrl,
+      productImage: imageUrl,
       publishedDateTime: `${date}`,
     };
 
@@ -166,16 +164,6 @@ const PublishItem = () => {
       });
   };
 
-  useEffect(() => {
-    try {
-      productDataUpload();
-    } catch (error) {
-      console.log("Error", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [productImageUrl]);
-
   const handlePublishItem = async () => {
     if (
       !!productData?.productName &&
@@ -194,14 +182,6 @@ const PublishItem = () => {
       toast.error("Incomplete Data");
     }
   };
-
-  console.log("!!productData?.productName", !!productData?.productName);
-  console.log(
-    "!!productData?.productDescription",
-    !!productData?.productDescription
-  );
-  console.log("productImageFile?.imageFile", productImageFile?.imageFile);
-  console.log("!!productData?.productPrice", !!productData?.productPrice);
 
   return (
     <>

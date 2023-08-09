@@ -13,15 +13,30 @@ import {
     MenuList,
     Typography
 } from "@material-tailwind/react";
+import { getAuth } from "firebase/auth";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { toast, Toaster } from "react-hot-toast";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CountriesInfo from "../../utils/country_dial_info.json";
 import { db, firebaseApp } from "../../utils/firebaseConfig";
 
+const auth = getAuth(firebaseApp);
+
 const UpdateUserDetails = () => {
+
+    // check if a user is authenticated or not
+  const [authUser, authLoading, authError] = useAuthState(auth);
+
+  useEffect(() => {
+    if (!authUser?.email) {
+      redirect("/login");
+    }
+  }, [authUser]);
+  
   const [userData, setUserData] = useState({
     name: "",
     email: "",
