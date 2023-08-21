@@ -58,19 +58,6 @@ const PublishItem = () => {
     setProductData({ ...productData, [event.target.name]: event.target.value });
   };
 
-  // function to convert image to base64
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
 
   // view selected image
   const handleImage = async (e) => {

@@ -25,7 +25,7 @@ import { auth } from "../../utils/firebaseConfig";
 
 const ProfileMenu = () => {
   const router = useRouter();
-  const { setLoggedInEmail, setUserData } = useStore();
+  const { setLoggedInEmail, setUserData, userData } = useStore();
 
   const [signOut, loading, error] = useSignOut(auth);
 
@@ -45,6 +45,7 @@ const ProfileMenu = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeMenu = () => setIsMenuOpen(false);
+  
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
       <MenuHandler>
@@ -55,10 +56,10 @@ const ProfileMenu = () => {
         >
           <div className="flex flex-col justify-start py-2 px-8 items-start">
             <Typography variant="h6" color="blue" textGradient>
-              Tania Andrew
+              {userData?.name}
             </Typography>
             <Typography variant="small" color="gray" className="font-normal">
-              Bidder
+              {userData?.role}
             </Typography>
           </div>
           <ChevronDownIcon

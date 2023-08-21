@@ -4,6 +4,8 @@ import { Spinner } from "@material-tailwind/react";
 import { getAuth } from "firebase/auth";
 import { doc, getFirestore } from "firebase/firestore";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { toast } from "react-hot-toast";
 import useStore from "../../store/useStore";
