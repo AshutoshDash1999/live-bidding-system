@@ -24,11 +24,11 @@ export default function Login() {
     useSignInWithEmailAndPassword(auth);
   const { setLoggedInEmail } = useStore();
 
-    if (user?.user?.email) {
-        toast.success(`Signing in as: ${user?.user?.email}`);
-        setLoggedInEmail(user?.user?.email);
-        redirect("/retrieveData");
-    }
+  if (user?.user?.email) {
+    toast.success(`Signing in as: ${user?.user?.email}`);
+    setLoggedInEmail(user?.user?.email);
+    redirect("/retrieveData");
+  }
 
   if (error) {
     toast.error(`${error.name}: ${error.message}`);
@@ -47,28 +47,32 @@ export default function Login() {
             Sign In
           </Typography>
         </CardHeader>
-        <CardBody className="flex flex-col gap-4">
-          <Input
-            label="Email"
-            size="lg"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            label="Password"
-            size="lg"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+        <CardBody>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              signInWithEmailAndPassword(email, password);
+            }}
+          >
+            <Input
+              label="Email"
+              size="lg"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              label="Password"
+              size="lg"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button variant="gradient" fullWidth type="submit">
+              Sign In
+            </Button>
+          </form>
         </CardBody>
         <CardFooter className="pt-0">
-          <Button
-            variant="gradient"
-            fullWidth
-            onClick={() => signInWithEmailAndPassword(email, password)}
-          >
-            Sign In
-          </Button>
           <Typography variant="small" className="mt-6 flex justify-center">
             Don&apos;t have an account?
             <Link href="signup" className="ml-1 font-bold text-blue-700">
