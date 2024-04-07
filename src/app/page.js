@@ -12,7 +12,9 @@ export default function Home() {
           Making bidding easier
         </h1>
         <Link href="/login">
-          <Button className="p-2 my-4 text-xl">Get Started</Button>
+          <Button className="p-2 my-4 text-xl" color="blue">
+            Get Started
+          </Button>
         </Link>
       </div>
       <div>

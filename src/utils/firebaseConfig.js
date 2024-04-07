@@ -10,13 +10,13 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBfpKAI8HeQOemBF8aGdxckLQilh4ljkVI",
-  authDomain: "live-bidding-23258.firebaseapp.com",
-  projectId: "live-bidding-23258",
-  storageBucket: "live-bidding-23258.appspot.com",
-  messagingSenderId: "93990319127",
-  appId: "1:93990319127:web:da0f2d29931de7e2a49852",
-  measurementId: "G-5YHMTSD6H0",
+  apiKey: NEXT_PUBLIC_API_KEY,
+  authDomain: NEXT_PUBLIC_AUTHDOMAIN,
+  projectId: NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: NEXT_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: NEXT_PUBLIC_MESSAGING_SENDERID,
+  appId: NEXT_PUBLIC_APPID,
+  measurementId: NEXT_PUBLIC_MEASUREMENTID``,
 };
 
 // Initialize Firebase
