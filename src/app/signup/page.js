@@ -2,12 +2,13 @@
 
 import { auth } from "@/utils/firebaseConfig";
 import {
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Input,
-    Typography
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Input,
+  Typography,
 } from "@material-tailwind/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,7 +18,6 @@ import toast, { Toaster } from "react-hot-toast";
 import CustomButton from "../../components/CustomButton/CustomButton";
 
 export default function Register() {
-    
   function reducer(state, action) {
     switch (action.type) {
       case "update__email": {
@@ -81,7 +81,7 @@ export default function Register() {
   return (
     <div className="flex justify-center items-center h-screen">
       <Toaster />
-      
+
       <Card className="w-96">
         <CardHeader
           variant="gradient"
@@ -134,12 +134,10 @@ export default function Register() {
             {/* <Input label="Confirm Password" size="lg" /> */}
           </CardBody>
           <CardFooter className="pt-0">
-            <CustomButton
-              loading={loading}
-              loadingText="Creating Account..."
-              type="submit"
-              text="Create Account"
-            />
+            <Button color="blue" type="submit" loading={loading} fullWidth>
+              Create Account
+            </Button>
+
             <Typography variant="small" className="mt-6 flex justify-center">
               Already a user?
               <Link

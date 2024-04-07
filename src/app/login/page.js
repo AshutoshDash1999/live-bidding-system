@@ -2,37 +2,49 @@
 
 import { auth } from "@/utils/firebaseConfig";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Input,
-    Typography
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Input,
+  Typography,
 } from "@material-tailwind/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { toast, Toaster } from "react-hot-toast";
-import useStore from "../../store/useStore";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [signInWithEmailAndPassword, user, loading, error] =
+  const [loginDetails, setLoginDetails] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [signInWithEmailAndPassword, user, signInLoading] =
     useSignInWithEmailAndPassword(auth);
-  const { setLoggedInEmail } = useStore();
 
-  if (user?.user?.email) {
-    toast.success(`Signing in as: ${user?.user?.email}`);
-    setLoggedInEmail(user?.user?.email);
-    redirect("/retrieveData");
-  }
+  const loginDetailsHandler = (e) => {
+    setLoginDetails({
+      ...loginDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  if (error) {
-    toast.error(`${error.name}: ${error.message}`);
-  }
+  const logInHandler = (e) => {
+    e.preventDefault();
+
+    if (loginDetails?.email && loginDetails?.password) {
+      try {
+        signInWithEmailAndPassword(loginDetails?.email, loginDetails?.password);
+      } catch (error) {
+        console.log("error", error);
+        toast.error("Please enter login details.");
+      }
+    } else {
+      toast.error("Please enter login details.");
+    }
+  };
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -48,26 +60,29 @@ export default function Login() {
           </Typography>
         </CardHeader>
         <CardBody>
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              signInWithEmailAndPassword(email, password);
-            }}
-          >
+          <form className="flex flex-col gap-4" onSubmit={logInHandler}>
             <Input
               label="Email"
+              name="email"
               size="lg"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={loginDetails?.email}
+              onChange={loginDetailsHandler}
             />
             <Input
               label="Password"
               size="lg"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={loginDetails?.password}
+              onChange={loginDetailsHandler}
             />
-            <Button variant="gradient" fullWidth type="submit">
+            <Button
+              variant="gradient"
+              fullWidth
+              type="submit"
+              loading={signInLoading}
+              color="blue"
+              className="flex justify-center"
+            >
               Sign In
             </Button>
           </form>
