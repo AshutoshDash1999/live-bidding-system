@@ -8,6 +8,7 @@ const Input: FC<InputProps> = ({
   leftIcon,
   rightIcon,
   className,
+  disabled = true,
   ...props
 }) => {
   return (
@@ -21,16 +22,21 @@ const Input: FC<InputProps> = ({
         </label>
       )}
 
-      <div className="flex items-center gap-2 bg-gray-50 border border-gray-300 p-2.5  rounded-lg focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-purple-500">
+      <div
+        className={`flex items-center gap-2 bg-gray-50 border border-gray-300 p-2.5  rounded-lg focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-purple-500 ${
+          disabled ? "bg-neutral-200" : null
+        }`}
+      >
         {leftIcon}
 
         <input
           {...props}
           type={inputType}
           id="custom_input"
-          className=" text-gray-900 text-sm w-full focus:outline-none caret-purple-700"
+          className=" text-gray-900 text-sm w-full focus:outline-none caret-purple-700 disabled:bg-neutral-200"
           placeholder={placeholder || label}
           required
+          disabled={disabled}
         />
 
         {rightIcon}

@@ -26,6 +26,7 @@ interface InputProps {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }
 
 interface ButtonProps {
