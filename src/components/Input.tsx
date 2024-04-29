@@ -8,14 +8,18 @@ const Input: FC<InputProps> = ({
   leftIcon,
   rightIcon,
   className,
-  disabled = true,
+  disabled = false,
+  name,
+  id,
+  value,
+  onChange,
   ...props
 }) => {
   return (
     <div className={twMerge("my-2", className)}>
       {label && (
         <label
-          htmlFor="custom_input"
+          htmlFor={id || "custom_input"}
           className="block mb-2 text-sm font-medium text-gray-900"
         >
           {label}
@@ -30,13 +34,16 @@ const Input: FC<InputProps> = ({
         {leftIcon}
 
         <input
+          name={name}
           {...props}
           type={inputType}
-          id="custom_input"
+          id={id || "custom_input"}
           className=" text-gray-900 text-sm w-full focus:outline-none caret-purple-700 disabled:bg-neutral-200"
           placeholder={placeholder || label}
           required
           disabled={disabled}
+          value={value}
+          onChange={onChange}
         />
 
         {rightIcon}

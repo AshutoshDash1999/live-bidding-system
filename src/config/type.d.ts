@@ -22,11 +22,13 @@ interface InputProps {
     | "week";
   placeholder?: string;
   value: string;
-  onChange: () => void;
+  onChange: (e) => void;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   className?: string;
   disabled?: boolean;
+  name?: string;
+  id?: string;
 }
 
 interface ButtonProps {
