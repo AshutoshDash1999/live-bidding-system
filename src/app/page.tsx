@@ -1,7 +1,12 @@
-import Input from "@/components/Input";
-import { HomeIcon } from "@heroicons/react/20/solid";
-import Image from "next/image";
+import Button from "@/components/Button";
+import Link from "next/link";
 
 export default function Home() {
-  return <main className="p-10"></main>;
+  return (
+    <main className="p-10">
+      <Link href="/login">
+        <Button>Login</Button>
+      </Link>
+    </main>
+  );
 }
