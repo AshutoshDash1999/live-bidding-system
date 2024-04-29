@@ -3,7 +3,10 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { firebaseAuth } from "@/config/firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChangeEvent, useState } from "react";
@@ -61,6 +64,34 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const loginHandler = () => {
+    if (!!userDetails?.email && !!userDetails?.password) {
+      try {
+        setIsButtonLoading(true);
+
+        signInWithEmailAndPassword(
+          firebaseAuth,
+          userDetails?.email,
+          userDetails?.password
+        )
+          .then((userCredential) => {
+            const user = userCredential.user;
+            toast.success(`Login successfull for ${user?.email}.`);
+          })
+          .catch((error) => {
+            toast.error(`Error while creating account ${error.message}.`);
+          })
+          .finally(() => {
+            setIsButtonLoading(false);
+          });
+      } catch (error) {
+        toast.error(`Error while creating account ${error}.`);
+      }
+    } else {
+      toast.error("Please fill all details");
+    }
+  };
+
   return (
     <>
       <Toaster />
@@ -96,7 +127,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             ) : null}
 
             <Button
-              onClick={createAccountHandler}
+              onClick={() =>
+                isSignupScreen ? createAccountHandler() : loginHandler()
+              }
               fullWidth
               className="mt-4"
               loading={isButtonLoading}
