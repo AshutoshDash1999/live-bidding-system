@@ -84,10 +84,10 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           userDetails?.email,
           userDetails?.password
         )
-          .then((userCredential) => {
-            const user = userCredential.user;
-            sessionStorage.setItem("accessToken", user?.accessToken);
-            toast.success(`Login successfull for ${user?.email}.`);
+          .then(async (response) => {
+            const accessToken = await response.user.getIdToken();
+            sessionStorage.setItem("accessToken", accessToken);
+            toast.success(`Login successfull for ${response?.user?.email}.`);
             router.replace("/home");
           })
           .catch((error) => {
