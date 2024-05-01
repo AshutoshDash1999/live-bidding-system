@@ -8,12 +8,22 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { ChangeEvent, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  // if access token is present then redirect user to
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+
+    if (!!accessToken) {
+      router.replace("/home");
+    }
+  }, []);
 
   const isSignupScreen = pathname === "/signup";
 
@@ -76,7 +86,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         )
           .then((userCredential) => {
             const user = userCredential.user;
+            sessionStorage.setItem("accessToken", user?.accessToken);
             toast.success(`Login successfull for ${user?.email}.`);
+            router.replace("/home");
           })
           .catch((error) => {
             toast.error(`Error while creating account ${error.message}.`);
