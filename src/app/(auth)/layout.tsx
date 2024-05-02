@@ -7,7 +7,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -150,21 +149,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             </Button>
           </div>
 
-          {isSignupScreen ? (
-            <p className="text-center">
-              Already have an account?{" "}
-              <Link href={"/login"} className="text-purple-600">
-                Login here
-              </Link>
-            </p>
-          ) : (
-            <p className="text-center">
-              New User?{" "}
-              <Link href={"/signup"} className="text-purple-600">
-                Signup here
-              </Link>
-            </p>
-          )}
+          {children}
         </div>
       </section>
     </>
