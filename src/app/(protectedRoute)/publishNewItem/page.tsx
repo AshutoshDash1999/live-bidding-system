@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { firebaseStorage, firestoreDB } from "@/config/firebaseConfig";
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import {
   getDownloadURL,
   ref as storageRef,
@@ -18,7 +18,7 @@ import toast from "react-hot-toast";
 
 const imageUploadLottie = require("/public/lottie/image-upload.json");
 
-const PublishItem = () => {
+const PublishNewItem = () => {
   const imageUploadInputRef = useRef<HTMLInputElement>(null);
 
   const [productDetails, setProductDetails] = useState({
@@ -87,6 +87,8 @@ const PublishItem = () => {
         ...productDetails,
         productImageURL,
       });
+      toast.success(`Item published successfully`);
+      console.log("item published");
     } catch (error: any) {
       toast.error(`Something went wrong: ${error}`);
     } finally {
@@ -169,4 +171,4 @@ const PublishItem = () => {
     </div>
   );
 };
-export default PublishItem;
+export default PublishNewItem;
