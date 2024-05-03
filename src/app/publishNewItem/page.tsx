@@ -2,8 +2,9 @@
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import { firebaseStorage } from "@/config/firebaseConfig";
+import { firebaseStorage, firestoreDB } from "@/config/firebaseConfig";
 import { XCircleIcon } from "@heroicons/react/24/outline";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import {
   getDownloadURL,
   ref as storageRef,
@@ -27,6 +28,9 @@ const PublishItem = () => {
     auctionEndingDateTime: "",
   });
   const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+
+  const productID = crypto.randomUUID().replaceAll("-", "").slice(0, 17);
 
   const productDetailsChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setProductDetails({
@@ -53,21 +57,41 @@ const PublishItem = () => {
     }
   };
 
-  const productDetailsSubmitHandler = () => {
-    const productImageRef = storageRef(
-      firebaseStorage,
-      `productImage/${selectedImage?.name.trim().replaceAll(" ", "_")}`
-    );
+  const productDetailsSubmitHandler = async () => {
+    try {
+      setIsButtonLoading(true);
 
-    uploadBytes(productImageRef, selectedImage)
-      .then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          console.log("url", url);
-        });
-      })
-      .catch((error) => {
-        toast.error(`Upload failed: ${error?.message}`);
+      const productImageRef = storageRef(
+        firebaseStorage,
+        `productImage/${selectedImage?.name.trim().replaceAll(" ", "_")}`
+      );
+
+      // Wrap the upload and URL retrieval in a Promise to ensure sequential execution
+      const productImageURLPromise = new Promise((resolve, reject) => {
+        uploadBytes(productImageRef, selectedImage)
+          .then((snapshot) => {
+            getDownloadURL(snapshot.ref).then((url) => {
+              resolve(url); // Resolve the promise with the URL
+            });
+          })
+          .catch((error) => {
+            toast.error(`Upload failed: ${error?.message}`);
+            reject(error); // Reject the promise if there's an error
+          });
       });
+
+      // Await the URL retrieval promise before proceeding
+      const productImageURL = await productImageURLPromise;
+
+      await setDoc(doc(firestoreDB, "productDetails", productID), {
+        ...productDetails,
+        productImageURL,
+      });
+    } catch (error: any) {
+      toast.error(`Something went wrong: ${error}`);
+    } finally {
+      setIsButtonLoading(false);
+    }
   };
 
   return (
@@ -134,7 +158,12 @@ const PublishItem = () => {
             onChange={productDetailsChangeHandler}
           />
 
-          <Button onClick={productDetailsSubmitHandler}>Publish Item</Button>
+          <Button
+            onClick={productDetailsSubmitHandler}
+            loading={isButtonLoading}
+          >
+            Publish Item
+          </Button>
         </div>
       </div>
     </div>
