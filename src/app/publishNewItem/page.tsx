@@ -2,10 +2,18 @@
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { firebaseStorage } from "@/config/firebaseConfig";
 import { XCircleIcon } from "@heroicons/react/24/outline";
+import {
+  getDownloadURL,
+  ref as storageRef,
+  uploadBytes,
+} from "firebase/storage";
+
 import Lottie from "lottie-react";
 import Image from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 const imageUploadLottie = require("/public/lottie/image-upload.json");
 
@@ -38,9 +46,28 @@ const PublishItem = () => {
   };
 
   const selectImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setSelectedImage(URL.createObjectURL(e?.target?.files[0] as Blob));
+    if (e.target.files && e?.target?.files[0]?.size < 2185200) {
+      setSelectedImage(e?.target?.files[0]);
+    } else {
+      toast.error("Image size should be less than 2MB!");
     }
+  };
+
+  const productDetailsSubmitHandler = () => {
+    const productImageRef = storageRef(
+      firebaseStorage,
+      `productImage/${selectedImage?.name.trim().replaceAll(" ", "_")}`
+    );
+
+    uploadBytes(productImageRef, selectedImage)
+      .then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          console.log("url", url);
+        });
+      })
+      .catch((error) => {
+        toast.error(`Upload failed: ${error?.message}`);
+      });
   };
 
   return (
@@ -56,7 +83,7 @@ const PublishItem = () => {
                   onClick={selectedImageRemoveHandler}
                 />
                 <Image
-                  src={selectedImage}
+                  src={URL.createObjectURL(selectedImage)}
                   alt=""
                   width={300}
                   height={100}
@@ -73,11 +100,11 @@ const PublishItem = () => {
           </div>
 
           <input
-            className="hidden"
             type="file"
             accept="image/png, image/jpeg, image/jpg"
             ref={imageUploadInputRef}
             onChange={selectImageHandler}
+            hidden
           />
         </div>
         <div className="flex flex-col gap-2 w-1/3">
@@ -107,7 +134,7 @@ const PublishItem = () => {
             onChange={productDetailsChangeHandler}
           />
 
-          <Button onClick={() => {}}>Publish Item</Button>
+          <Button onClick={productDetailsSubmitHandler}>Publish Item</Button>
         </div>
       </div>
     </div>
