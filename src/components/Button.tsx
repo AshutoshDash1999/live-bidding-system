@@ -23,7 +23,7 @@ const Button: FC<ButtonProps> = ({
       case "danger":
         return "text-white bg-red-600 hover:bg-red-800 disabled:bg-neutral-400 disabled:hover:shadow-none disabled:shadow-none";
       default:
-        return "bg-purple-600 hover:bg-purple-500 disabled:bg-neutral-400 disabled:hover:shadow-none disabled:shadow-none";
+        return "bg-purple-600 hover:bg-purple-700 disabled:bg-neutral-400 disabled:hover:shadow-none disabled:shadow-none";
     }
   }, [variant]);
 
@@ -41,7 +41,7 @@ const Button: FC<ButtonProps> = ({
   return (
     <button
       className={twMerge(
-        "text-white font-bold rounded-lg px-5 py-2.5 text-center my-2 shadow-md text-sm shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 uppercase transition-all flex items-center justify-center gap-2 active:scale-95 disabled:active:scale-100",
+        "text-white font-bold rounded-lg px-5 py-2.5 text-center my-2 shadow-md text-sm shadow-gray-900/10 hover:shadow-md hover:shadow-gray-900/20 uppercase transition-all flex items-center justify-center gap-2 active:scale-95 disabled:active:scale-100",
         buttonVariant,
         buttonSize,
         fullWidth ? "w-full" : null,
