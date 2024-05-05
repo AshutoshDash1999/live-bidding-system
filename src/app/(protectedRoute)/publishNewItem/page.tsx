@@ -10,16 +10,17 @@ import {
   ref as storageRef,
   uploadBytes,
 } from "firebase/storage";
-
 import Lottie from "lottie-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useRef, useState } from "react";
 import toast from "react-hot-toast";
-
-const imageUploadLottie = require("/public/lottie/image-upload.json");
+import imageUploadLottie from "../../../../public/lottie/image-upload.json";
 
 const PublishNewItem = () => {
   const imageUploadInputRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
 
   const [productDetails, setProductDetails] = useState({
     name: "",
@@ -57,6 +58,8 @@ const PublishNewItem = () => {
     }
   };
 
+  // TODO : add proper form validation
+
   const productDetailsSubmitHandler = async () => {
     try {
       setIsButtonLoading(true);
@@ -88,7 +91,8 @@ const PublishNewItem = () => {
         productImageURL,
       });
       toast.success(`Item published successfully`);
-      console.log("item published");
+
+      router.push(`product/${productID}`);
     } catch (error: any) {
       toast.error(`Something went wrong: ${error}`);
     } finally {
