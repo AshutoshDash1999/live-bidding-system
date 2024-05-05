@@ -29,6 +29,9 @@ interface InputProps {
   disabled?: boolean;
   name?: string;
   id?: string;
+  variant?: "input" | "input-with-button";
+  buttonText?: string;
+  onButtonClick?: () => void;
 }
 
 interface ButtonProps {

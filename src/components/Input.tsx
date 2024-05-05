@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { twMerge } from "tailwind-merge";
+import Button from "./Button";
 
 const Input: FC<InputProps> = ({
   label,
@@ -13,21 +14,24 @@ const Input: FC<InputProps> = ({
   id,
   value,
   onChange,
+  variant,
+  buttonText = "Submit",
+  onButtonClick,
   ...props
 }) => {
   return (
-    <div className={twMerge("my-2", className)}>
+    <div className={twMerge("my-0", className)}>
       {label && (
         <label
           htmlFor={id || "custom_input"}
-          className="block mb-2 text-sm font-medium text-gray-900"
+          className="block mb-2 text-sm font-semibold text-gray-900"
         >
           {label}
         </label>
       )}
 
       <div
-        className={`flex items-center gap-2 bg-gray-50 border border-gray-300 p-2.5  rounded-lg focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-purple-500 ${
+        className={`flex items-center gap-2 bg-gray-50 border border-gray-300 p-2  rounded-lg focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-purple-500 ${
           disabled ? "bg-neutral-200" : null
         }`}
       >
@@ -38,7 +42,7 @@ const Input: FC<InputProps> = ({
           {...props}
           type={inputType}
           id={id || "custom_input"}
-          className=" text-gray-900 text-sm w-full focus:outline-none caret-purple-700 disabled:bg-neutral-200"
+          className=" text-gray-900 text-md w-full focus:outline-none caret-purple-700 disabled:bg-neutral-200 font-semibold"
           placeholder={placeholder || label}
           required
           disabled={disabled}
@@ -47,6 +51,12 @@ const Input: FC<InputProps> = ({
         />
 
         {rightIcon}
+
+        {variant === "input-with-button" ? (
+          <Button onClick={onButtonClick} className="my-0">
+            {buttonText}
+          </Button>
+        ) : null}
       </div>
     </div>
   );
