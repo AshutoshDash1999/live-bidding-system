@@ -2,6 +2,7 @@
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { regex } from "@/config/constants";
 import { firebaseStorage, firestoreDB } from "@/config/firebaseConfig";
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { doc, setDoc } from "firebase/firestore";
@@ -34,10 +35,21 @@ const PublishNewItem = () => {
   const productID = crypto.randomUUID().replaceAll("-", "").slice(0, 17);
 
   const productDetailsChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setProductDetails({
-      ...productDetails,
-      [e.target.name]: e.target.value,
-    });
+    switch (e.target.name) {
+      case "price":
+        if (regex.number.test(e.target.value) || e.target.value === "") {
+          setProductDetails({
+            ...productDetails,
+            [e.target.name]: e.target.value,
+          });
+        }
+        break;
+      default:
+        setProductDetails({
+          ...productDetails,
+          [e.target.name]: e.target.value,
+        });
+    }
   };
 
   const selectedImageRemoveHandler = () => {
@@ -58,45 +70,52 @@ const PublishNewItem = () => {
     }
   };
 
-  // TODO : add proper form validation
-
   const productDetailsSubmitHandler = async () => {
-    try {
-      setIsButtonLoading(true);
+    if (
+      !!productDetails?.name &&
+      !!productDetails?.description &&
+      !!productDetails?.price &&
+      !!productDetails?.auctionEndingDateTime
+    ) {
+      try {
+        setIsButtonLoading(true);
 
-      const productImageRef = storageRef(
-        firebaseStorage,
-        `productImage/${selectedImage?.name.trim().replaceAll(" ", "_")}`
-      );
+        const productImageRef = storageRef(
+          firebaseStorage,
+          `productImage/${selectedImage?.name.trim().replaceAll(" ", "_")}`
+        );
 
-      // Wrap the upload and URL retrieval in a Promise to ensure sequential execution
-      const productImageURLPromise = new Promise((resolve, reject) => {
-        uploadBytes(productImageRef, selectedImage)
-          .then((snapshot) => {
-            getDownloadURL(snapshot.ref).then((url) => {
-              resolve(url); // Resolve the promise with the URL
+        // Wrap the upload and URL retrieval in a Promise to ensure sequential execution
+        const productImageURLPromise = new Promise((resolve, reject) => {
+          uploadBytes(productImageRef, selectedImage)
+            .then((snapshot) => {
+              getDownloadURL(snapshot.ref).then((url) => {
+                resolve(url); // Resolve the promise with the URL
+              });
+            })
+            .catch((error) => {
+              toast.error(`Upload failed: ${error?.message}`);
+              reject(error); // Reject the promise if there's an error
             });
-          })
-          .catch((error) => {
-            toast.error(`Upload failed: ${error?.message}`);
-            reject(error); // Reject the promise if there's an error
-          });
-      });
+        });
 
-      // Await the URL retrieval promise before proceeding
-      const productImageURL = await productImageURLPromise;
+        // Await the URL retrieval promise before proceeding
+        const productImageURL = await productImageURLPromise;
 
-      await setDoc(doc(firestoreDB, "productDetails", productID), {
-        ...productDetails,
-        productImageURL,
-      });
-      toast.success(`Item published successfully`);
+        await setDoc(doc(firestoreDB, "productDetails", productID), {
+          ...productDetails,
+          productImageURL,
+        });
+        toast.success(`Item published successfully`);
 
-      router.push(`product/${productID}`);
-    } catch (error: any) {
-      toast.error(`Something went wrong: ${error}`);
-    } finally {
-      setIsButtonLoading(false);
+        router.push(`product/${productID}`);
+      } catch (error: any) {
+        toast.error(`Something went wrong: ${error}`);
+      } finally {
+        setIsButtonLoading(false);
+      }
+    } else {
+      toast.error("Please fill all details.");
     }
   };
 
@@ -149,6 +168,7 @@ const PublishNewItem = () => {
             value={productDetails.price}
             name="price"
             onChange={productDetailsChangeHandler}
+            leftIcon={"₹"}
           />
           <Input
             label="Product Description"

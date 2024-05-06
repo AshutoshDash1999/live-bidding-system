@@ -1,7 +1,12 @@
 "use client";
 
+// TODO this page should be publicly available
+
 import Input from "@/components/Input";
+import { regex } from "@/config/constants";
 import { firebaseAuth, firestoreDB } from "@/config/firebaseConfig";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { doc, updateDoc } from "firebase/firestore";
 import Lottie from "lottie-react";
 import Image from "next/image";
@@ -12,6 +17,8 @@ import { useDocument } from "react-firebase-hooks/firestore";
 import toast from "react-hot-toast";
 import ImagePlaceholder from "../../../../../public/image-placeholder.svg";
 import notFoundLottie from "../../../../../public/lottie/not-found.json";
+
+dayjs.extend(relativeTime);
 
 const ProductDetailsPage = () => {
   const params = useParams();
@@ -28,7 +35,9 @@ const ProductDetailsPage = () => {
   );
 
   const bidAmountHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setBidAmount(e.target.value);
+    if (regex.number.test(e.target.value) || e.target.value === "") {
+      setBidAmount(e.target.value);
+    }
   };
 
   const updateBidAmount = async () => {
@@ -125,7 +134,13 @@ const ProductDetailsPage = () => {
             />
 
             <h2>
-              Auction ends at: {productDetails?.data()?.auctionEndingDateTime}
+              Auction ends{" "}
+              <span className="font-bold">
+                {dayjs(
+                  productDetails?.data()?.auctionEndingDateTime
+                )?.fromNow()}
+                .
+              </span>
             </h2>
 
             <div>
