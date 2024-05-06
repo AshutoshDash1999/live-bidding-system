@@ -16,7 +16,7 @@ const Input: FC<InputProps> = ({
   onChange,
   variant,
   buttonText = "Submit",
-  onButtonClick,
+  onButtonClick = () => {},
   ...props
 }) => {
   return (
