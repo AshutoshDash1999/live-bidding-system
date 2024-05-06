@@ -2,14 +2,20 @@
 
 import Input from "@/components/Input";
 import { firestoreDB } from "@/config/firebaseConfig";
-import { doc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
+import Lottie from "lottie-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { ChangeEvent, useState } from "react";
 import { useDocument } from "react-firebase-hooks/firestore";
+import toast from "react-hot-toast";
 import ImagePlaceholder from "../../../../../public/image-placeholder.svg";
+import notFoundLottie from "../../../../../public/lottie/not-found.json";
 
 const ProductDetailsPage = () => {
   const params = useParams();
+
+  const [bidAmount, setBidAmount] = useState("");
 
   const [productDetails, productDetailsLoading] = useDocument(
     doc(firestoreDB, "productDetails", `${params?.id}`),
@@ -18,18 +24,44 @@ const ProductDetailsPage = () => {
     }
   );
 
-  console.log("productDetails", !productDetails?.data());
-  console.log("productDetailsLoading", !productDetailsLoading);
-  console.log(!productDetailsLoading && !productDetails);
+  const bidAmountHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setBidAmount(e.target.value);
+  };
+
+  const updateBidAmount = async () => {
+    if (parseFloat(bidAmount) > 0) {
+      if (parseFloat(bidAmount) > parseFloat(productDetails?.data()?.price)) {
+        const productDetailsRef = doc(
+          firestoreDB,
+          "productDetails",
+          `${params?.id}`
+        );
+
+        await updateDoc(productDetailsRef, {
+          price: bidAmount,
+        });
+      } else {
+        toast.error("Bid with higher amount.");
+      }
+    } else {
+      toast.error("Bid a number first");
+    }
+  };
 
   // ! Test product id: 186e11d5e5ca49a0a
 
+  // ? If product id doesnt exist
   if (!productDetailsLoading && !productDetails?.data()) {
     return (
       <div>
         <h1 className="text-center text-5xl font-bold">
           This product doesn&apos;t exist!
         </h1>
+        <Lottie
+          animationData={notFoundLottie}
+          className="flex justify-center items-center h-96"
+          loop={true}
+        />
       </div>
     );
   }
@@ -79,6 +111,9 @@ const ProductDetailsPage = () => {
               label="Place your bid here"
               variant="input-with-button"
               leftIcon={"₹"}
+              value={bidAmount}
+              onChange={bidAmountHandler}
+              onButtonClick={updateBidAmount}
             />
 
             <h2>
