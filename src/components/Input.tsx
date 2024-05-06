@@ -20,7 +20,7 @@ const Input: FC<InputProps> = ({
   ...props
 }) => {
   return (
-    <div className={twMerge("my-0", className)}>
+    <div className={twMerge("my-2", className)}>
       {label && (
         <label
           htmlFor={id || "custom_input"}

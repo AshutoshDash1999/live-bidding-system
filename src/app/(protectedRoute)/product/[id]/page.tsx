@@ -1,12 +1,13 @@
 "use client";
 
 import Input from "@/components/Input";
-import { firestoreDB } from "@/config/firebaseConfig";
+import { firebaseAuth, firestoreDB } from "@/config/firebaseConfig";
 import { doc, updateDoc } from "firebase/firestore";
 import Lottie from "lottie-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { ChangeEvent, useState } from "react";
+import { useIdToken } from "react-firebase-hooks/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
 import toast from "react-hot-toast";
 import ImagePlaceholder from "../../../../../public/image-placeholder.svg";
@@ -16,6 +17,8 @@ const ProductDetailsPage = () => {
   const params = useParams();
 
   const [bidAmount, setBidAmount] = useState("");
+
+  const [user] = useIdToken(firebaseAuth);
 
   const [productDetails, productDetailsLoading] = useDocument(
     doc(firestoreDB, "productDetails", `${params?.id}`),
@@ -29,22 +32,27 @@ const ProductDetailsPage = () => {
   };
 
   const updateBidAmount = async () => {
-    if (parseFloat(bidAmount) > 0) {
-      if (parseFloat(bidAmount) > parseFloat(productDetails?.data()?.price)) {
-        const productDetailsRef = doc(
-          firestoreDB,
-          "productDetails",
-          `${params?.id}`
-        );
+    if (user?.email) {
+      if (parseFloat(bidAmount) > 0) {
+        if (parseFloat(bidAmount) > parseFloat(productDetails?.data()?.price)) {
+          const productDetailsRef = doc(
+            firestoreDB,
+            "productDetails",
+            `${params?.id}`
+          );
 
-        await updateDoc(productDetailsRef, {
-          price: bidAmount,
-        });
+          await updateDoc(productDetailsRef, {
+            price: bidAmount,
+            bidder: user?.email,
+          });
+        } else {
+          toast.error("Bid with higher amount.");
+        }
       } else {
-        toast.error("Bid with higher amount.");
+        toast.error("Bid a number first");
       }
     } else {
-      toast.error("Bid a number first");
+      toast.error("Login first before bidding");
     }
   };
 
@@ -92,7 +100,7 @@ const ProductDetailsPage = () => {
               alt=""
               height={400}
               width={600}
-              className="h-full max-h-screen w-full rounded-lg object-cover"
+              className="h-full max-h-screen w-full rounded-lg object-cover shadow-md"
             />
           </div>
           <div className="flex flex-col space-y-4">
