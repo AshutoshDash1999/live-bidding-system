@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
 
 export default function ProtectedRouteLayout({
@@ -8,7 +9,8 @@ export default function ProtectedRouteLayout({
   return (
     <>
       <Toaster />
-      {children}
+      <Navbar />
+      <div className="p-8">{children}</div>
     </>
   );
 }
