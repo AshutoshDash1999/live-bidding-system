@@ -1,6 +1,5 @@
 "use client";
 
-import Button from "@/components/Button";
 import { firestoreDB } from "@/config/firebaseConfig";
 import { collection } from "firebase/firestore";
 import Image from "next/image";
@@ -19,10 +18,6 @@ const Home = () => {
 
   return (
     <div>
-      <Button onClick={() => router.push("/publishNewItem")} className="mb-10">
-        Publish Item
-      </Button>
-
       {productListLoading ? (
         <div className="animate-pulse grid grid-cols-4 gap-8">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => {
@@ -41,10 +36,11 @@ const Home = () => {
               <div
                 key={doc?.id}
                 className="rounded-lg shadow-md cursor-pointer"
+                onClick={() => router.push(`product/${doc?.id}`)}
               >
                 <Image
                   src={doc?.data()?.productImageURL}
-                  alt=""
+                  alt={doc?.data()?.name}
                   width={350}
                   height={200}
                   className="rounded-xl object-cover h-96 w-96"
@@ -60,6 +56,13 @@ const Home = () => {
           })}
         </div>
       )}
+
+      {/* In case there are no products  */}
+      {!productListLoading && productList?.docs.length === 0 ? (
+        <h2 className="text-center font-bold text-3xl text-neutral-500">
+          There is no products to show.
+        </h2>
+      ) : null}
     </div>
   );
 };
