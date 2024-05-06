@@ -17,7 +17,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
   // if access token is present then redirect user to
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
 
     if (!!accessToken) {
       router.replace("/home");
@@ -85,7 +85,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         )
           .then(async (response) => {
             const accessToken = await response.user.getIdToken();
-            sessionStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("accessToken", accessToken);
             toast.success(`Login successfull for ${response?.user?.email}.`);
             router.replace("/home");
           })
