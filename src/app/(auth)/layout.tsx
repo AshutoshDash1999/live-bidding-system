@@ -15,7 +15,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  // if access token is present then redirect user to
+  // if access token is present then redirect user to home
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
 
