@@ -100,7 +100,7 @@ const ProductDetailsPage = () => {
               alt=""
               height={400}
               width={600}
-              className="h-full max-h-screen w-full rounded-lg object-cover shadow-md"
+              className="h-full max-h-96 w-full max-w-2xl rounded-lg object-cover shadow-md"
             />
           </div>
           <div className="flex flex-col space-y-4">

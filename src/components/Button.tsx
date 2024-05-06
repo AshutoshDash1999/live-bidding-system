@@ -17,7 +17,7 @@ const Button: FC<ButtonProps> = ({
   const buttonVariant = useMemo(() => {
     switch (variant) {
       case "outline":
-        return "text-purple-600 bg-white border border-2 border-purple-600 hover:border-purple-400 hover:text-purple-400 disabled:text-neutral-400 disabled:border-neutral-400 disabled:hover:shadow-none disabled:shadow-none";
+        return "text-purple-600 bg-white border border-2 border-purple-600 hover:border-purple-500 hover:text-purple-500 disabled:text-neutral-400 disabled:border-neutral-400 disabled:hover:shadow-none disabled:shadow-none";
       case "text":
         return "text-purple-600 bg-white shadow-none hover:shadow-none hover:bg-purple-200 disabled:disabled:text-neutral-400 disabled:bg-white";
       case "danger":
@@ -41,7 +41,7 @@ const Button: FC<ButtonProps> = ({
   return (
     <button
       className={twMerge(
-        "text-white font-bold rounded-lg px-5 py-2.5 text-center my-2 shadow-md text-sm shadow-gray-900/10 hover:shadow-md hover:shadow-gray-900/20 uppercase transition-all flex items-center justify-center gap-2 active:scale-95 disabled:active:scale-100",
+        "text-white font-bold rounded-lg px-5 py-2.5 text-center my-2 shadow-md text-lg shadow-gray-900/10 hover:shadow-md hover:shadow-gray-900/20 uppercase transition-all flex items-center justify-center gap-2 active:scale-95 disabled:active:scale-100",
         buttonVariant,
         buttonSize,
         fullWidth ? "w-full" : null,
