@@ -23,12 +23,21 @@ dayjs.extend(relativeTime);
 const ProductDetailsPage = () => {
   const params = useParams();
 
-  const [bidAmount, setBidAmount] = useState("");
-
+  const [bidAmount, setBidAmount] = useState<string>("");
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
   const [user] = useIdToken(firebaseAuth);
 
+  // fetch product details
   const [productDetails, productDetailsLoading] = useDocument(
     doc(firestoreDB, "productDetails", `${params?.id}`),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
+  );
+
+  // fetch user details
+  const [userDetails] = useDocument(
+    doc(firestoreDB, "userData", `${user?.email}`),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
     }
@@ -41,27 +50,56 @@ const ProductDetailsPage = () => {
   };
 
   const updateBidAmount = async () => {
-    if (user?.email) {
-      if (parseFloat(bidAmount) > 0) {
-        if (parseFloat(bidAmount) > parseFloat(productDetails?.data()?.price)) {
-          const productDetailsRef = doc(
-            firestoreDB,
-            "productDetails",
-            `${params?.id}`
-          );
+    try {
+      setIsButtonLoading(true);
 
-          await updateDoc(productDetailsRef, {
-            price: bidAmount,
-            bidder: user?.email,
-          });
+      if (user?.email) {
+        if (parseFloat(bidAmount) > 0) {
+          if (
+            parseFloat(bidAmount) > parseFloat(productDetails?.data()?.price)
+          ) {
+            const productDetailsRef = doc(
+              firestoreDB,
+              "productDetails",
+              `${params?.id}`
+            );
+
+            // update product latest bid
+            await updateDoc(productDetailsRef, {
+              price: bidAmount,
+              bidder: user?.email,
+            });
+
+            // add product to user's bidding history
+            const userDetailsRef = doc(
+              firestoreDB,
+              "userData",
+              `${user?.email}`
+            );
+
+            await updateDoc(userDetailsRef, {
+              biddingHistory: [
+                ...userDetails?.data()?.biddingHistory,
+                {
+                  productId: params?.id,
+                  bidAmount,
+                },
+              ],
+            });
+          } else {
+            toast.error("Bid with higher amount.");
+          }
         } else {
-          toast.error("Bid with higher amount.");
+          toast.error("Bid a number first");
         }
       } else {
-        toast.error("Bid a number first");
+        toast.error("Login first before bidding");
       }
-    } else {
-      toast.error("Login first before bidding");
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      setIsButtonLoading(false);
+      setBidAmount("");
     }
   };
 
@@ -131,6 +169,7 @@ const ProductDetailsPage = () => {
               value={bidAmount}
               onChange={bidAmountHandler}
               onButtonClick={updateBidAmount}
+              buttonLoading={isButtonLoading}
             />
 
             <h2>
