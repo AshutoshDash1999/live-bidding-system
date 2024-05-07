@@ -32,6 +32,7 @@ interface InputProps {
   variant?: "input" | "input-with-button";
   buttonText?: string;
   onButtonClick?: () => void;
+  buttonLoading?: boolean;
 }
 
 interface ButtonProps {

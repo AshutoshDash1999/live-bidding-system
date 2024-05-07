@@ -17,6 +17,7 @@ const Input: FC<InputProps> = ({
   variant,
   buttonText = "Submit",
   onButtonClick = () => {},
+  buttonLoading,
   ...props
 }) => {
   return (
@@ -53,7 +54,11 @@ const Input: FC<InputProps> = ({
         {rightIcon}
 
         {variant === "input-with-button" ? (
-          <Button onClick={onButtonClick} className="my-0">
+          <Button
+            onClick={onButtonClick}
+            className="my-0"
+            loading={buttonLoading}
+          >
             {buttonText}
           </Button>
         ) : null}
