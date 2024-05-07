@@ -173,7 +173,7 @@ const ProductDetailsPage = () => {
             />
 
             <h2>
-              Auction ends{" "}
+              Auction ending{" "}
               <span className="font-bold">
                 {dayjs(
                   productDetails?.data()?.auctionEndingDateTime
