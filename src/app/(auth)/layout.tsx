@@ -2,11 +2,12 @@
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import { firebaseAuth } from "@/config/firebaseConfig";
+import { firebaseAuth, firestoreDB } from "@/config/firebaseConfig";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -37,7 +38,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
 
-  const createAccountHandler = () => {
+  const createAccountHandler = async () => {
     if (
       !!userDetails?.email &&
       !!userDetails?.password &&
@@ -61,6 +62,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           .finally(() => {
             setIsButtonLoading(false);
           });
+
+        await setDoc(doc(firestoreDB, "userData", userDetails?.email), {
+          email: userDetails?.email,
+          biddingHistory: [],
+        });
       } catch (error) {
         toast.error(`Error while creating account ${error}.`);
       }
