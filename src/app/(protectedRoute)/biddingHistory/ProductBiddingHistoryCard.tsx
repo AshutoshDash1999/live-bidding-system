@@ -30,23 +30,30 @@ const ProductBiddingHistoryCard = ({
   console.log("productDetails", productDetails?.data());
 
   //   TODO :
-  // 1. add loading, error state
   // 2. navigate to product
   // 3. bidding status: ongoing,lost,  won
 
+  if (productDetailsLoading) {
+    return (
+      <div className="h-28 mb-4 rounded-lg animate-pulse bg-neutral-300"></div>
+    );
+  }
+
   return (
-    <div className="mb-4 rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer flex gap-8 p-4">
+    <div className="mb-4 rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer flex gap-8 p-2">
       <Image
         src={productDetails?.data()?.productImageURL}
         alt={productDetails?.data()?.name}
         height={300}
         width={150}
-        className="rounded-xl"
+        className="rounded-lg h-24 w-24 object-cover"
       />
       <div className="flex gap-8 justify-between flex-1">
         <div>
           <h3 className="font-bold text-4xl">{productDetails?.data()?.name}</h3>
-          <h4>₹ {productDetails?.data()?.price}</h4>
+          <h4>
+            Current price: <span>₹ {productDetails?.data()?.price}</span>
+          </h4>
           <h2>
             Auction ending{" "}
             <span className="font-bold">
