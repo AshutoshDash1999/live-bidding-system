@@ -162,25 +162,35 @@ const ProductDetailsPage = () => {
               </span>
             </h3>
 
-            <Input
-              label="Place your bid here"
-              variant="input-with-button"
-              leftIcon={"₹"}
-              value={bidAmount}
-              onChange={bidAmountHandler}
-              onButtonClick={updateBidAmount}
-              buttonLoading={isButtonLoading}
-            />
+            {dayjs().isAfter(
+              dayjs(productDetails?.data()?.auctionEndingDateTime)
+            ) ? (
+              <h3 className="text-5xl text-neutral-500 font-bold">
+                Auction has expired!
+              </h3>
+            ) : (
+              <>
+                <Input
+                  label="Place your bid here"
+                  variant="input-with-button"
+                  leftIcon={"₹"}
+                  value={bidAmount}
+                  onChange={bidAmountHandler}
+                  onButtonClick={updateBidAmount}
+                  buttonLoading={isButtonLoading}
+                />
 
-            <h2>
-              Auction ending{" "}
-              <span className="font-bold">
-                {dayjs(
-                  productDetails?.data()?.auctionEndingDateTime
-                )?.fromNow()}
-                .
-              </span>
-            </h2>
+                <h2>
+                  Auction ending{" "}
+                  <span className="font-bold">
+                    {dayjs(
+                      productDetails?.data()?.auctionEndingDateTime
+                    )?.fromNow()}
+                    .
+                  </span>
+                </h2>
+              </>
+            )}
 
             <div>
               <h3 className="font-bold text-2xl">Description</h3>
