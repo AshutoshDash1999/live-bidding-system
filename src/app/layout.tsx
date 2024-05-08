@@ -5,8 +5,9 @@ import "./globals.css";
 const nunito = Nunito({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Live Auction",
-  description: "Made by Ashutosh Dash",
+  title: "Live Bidding System",
+  description:
+    "A simple auction system based on NextJS, Tailwind and Firebase || Made by Ashutosh Dash",
 };
 
 export default function RootLayout({
