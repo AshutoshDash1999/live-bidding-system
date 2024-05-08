@@ -1,3 +1,4 @@
+import BiddingStatus from "@/components/BiddingStatus";
 import { FirestoreCollection } from "@/config/constants";
 import { firestoreDB } from "@/config/firebaseConfig";
 import dayjs from "dayjs";
@@ -27,11 +28,6 @@ const ProductBiddingHistoryCard = ({
       snapshotListenOptions: { includeMetadataChanges: true },
     }
   );
-
-  console.log("productDetails", productDetails?.data());
-
-  //   TODO :
-  // 3. bidding status: ongoing,lost,  won
 
   if (productDetailsLoading) {
     return (
@@ -71,6 +67,10 @@ const ProductBiddingHistoryCard = ({
             </h2>
           </div>
           <div>
+            <BiddingStatus
+              auctionEndingDate={productDetails?.data()?.auctionEndingDateTime}
+              latestBidder={productDetails?.data()?.bidder}
+            />
             <h4 className="text-lg">Your bid:</h4>
             <h2 className="font-bold text-4xl">₹ {biddingData?.bidAmount}</h2>
           </div>
