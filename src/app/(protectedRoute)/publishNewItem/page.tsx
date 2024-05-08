@@ -3,7 +3,11 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { regex } from "@/config/constants";
-import { firebaseStorage, firestoreDB } from "@/config/firebaseConfig";
+import {
+  firebaseAuth,
+  firebaseStorage,
+  firestoreDB,
+} from "@/config/firebaseConfig";
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { doc, setDoc } from "firebase/firestore";
 import {
@@ -15,6 +19,7 @@ import Lottie from "lottie-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useRef, useState } from "react";
+import { useIdToken } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
 import imageUploadLottie from "../../../../public/lottie/image-upload.json";
 
@@ -23,11 +28,14 @@ const PublishNewItem = () => {
 
   const router = useRouter();
 
+  const [user] = useIdToken(firebaseAuth);
+
   const [productDetails, setProductDetails] = useState({
     name: "",
     price: "",
     description: "",
     auctionEndingDateTime: "",
+    publishedBy: user?.email,
   });
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
@@ -75,7 +83,8 @@ const PublishNewItem = () => {
       !!productDetails?.name &&
       !!productDetails?.description &&
       !!productDetails?.price &&
-      !!productDetails?.auctionEndingDateTime
+      !!productDetails?.auctionEndingDateTime &&
+      !!selectedImage?.name
     ) {
       try {
         setIsButtonLoading(true);
@@ -136,7 +145,7 @@ const PublishNewItem = () => {
                   alt=""
                   width={300}
                   height={100}
-                  className="h-96 rounded-lg"
+                  className="h-96 rounded-lg object-cover"
                 />
               </div>
             ) : (
