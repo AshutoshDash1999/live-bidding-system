@@ -1,11 +1,13 @@
 "use client";
 
+import { firebaseAuth } from "@/config/firebaseConfig";
 import {
   ArrowLeftStartOnRectangleIcon,
   HomeIcon,
   ListBulletIcon,
   SquaresPlusIcon,
 } from "@heroicons/react/20/solid";
+import { signOut } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -28,9 +30,16 @@ const Navbar = () => {
   const router = useRouter();
 
   const logOutHandler = () => {
-    localStorage.setItem("accessToken", "");
-    router.push("/");
-    toast.success("Log out successfully");
+    signOut(firebaseAuth)
+      .then(() => {
+        localStorage.setItem("accessToken", "");
+        router.push("/");
+        toast.success("Log out successfully");
+      })
+      .catch((error) => {
+        console.log("Error while logout:", error);
+        toast.error(`${error?.message}`);
+      });
   };
 
   const sellItemButtonHandler = () => {
