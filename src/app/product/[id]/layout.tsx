@@ -1,17 +1,14 @@
+import Navbar from "@/components/Navbar";
 import { FirestoreCollection } from "@/config/constants";
 import { firestoreDB } from "@/config/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 
-type Props = {
+export async function generateMetadata({
+  params,
+}: {
   params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+}): Promise<Metadata> {
   // read route params
   const productID = params?.id;
 
@@ -38,6 +35,11 @@ const ProductDetailsLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  return <div className="product-details-layout">{children}</div>;
+  return (
+    <>
+      <Navbar />
+      <div className="product-details-layout p-8">{children}</div>;
+    </>
+  );
 };
 export default ProductDetailsLayout;

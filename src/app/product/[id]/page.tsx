@@ -15,8 +15,8 @@ import { ChangeEvent, useState } from "react";
 import { useIdToken } from "react-firebase-hooks/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
 import toast from "react-hot-toast";
-import ImagePlaceholder from "../../../../../public/image-placeholder.svg";
-import notFoundLottie from "../../../../../public/lottie/not-found.json";
+import ImagePlaceholder from "../../../../public/image-placeholder.svg";
+import notFoundLottie from "../../../../public/lottie/not-found.json";
 
 dayjs.extend(relativeTime);
 
