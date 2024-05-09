@@ -65,7 +65,7 @@ const Navbar = () => {
   return (
     <>
       {isLoggedIn ? (
-        <div className=" text-white font-bold text-xl flex justify-between items-center">
+        <div className="bg-purple-600 py-4 px-8 text-white font-bold text-xl flex justify-between items-center">
           <div className="flex gap-8">
             {navItems.map((navItem) => {
               return (
