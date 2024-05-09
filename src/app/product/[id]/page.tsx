@@ -15,8 +15,8 @@ import { ChangeEvent, useState } from "react";
 import { useIdToken } from "react-firebase-hooks/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
 import toast from "react-hot-toast";
-import ImagePlaceholder from "../../../../public/image-placeholder.svg";
 import notFoundLottie from "../../../../public/lottie/not-found.json";
+import ImagePlaceholder from "../../../../public/svg/image-placeholder.svg";
 
 dayjs.extend(relativeTime);
 
@@ -124,7 +124,7 @@ const ProductDetailsPage = () => {
   return (
     <div className="flex space-x-10 justify-center">
       {productDetailsLoading ? (
-        <div className="animate-pulse flex space-x-4">
+        <div className="animate-pulse flex space-x-4 flex-col sm:flex-row">
           <div className="rounded-lg bg-neutral-300 h-96 w-96"></div>
           <div className="flex flex-col space-y-8">
             <div className="rounded-lg bg-neutral-300 h-8 w-96"></div>
@@ -136,7 +136,7 @@ const ProductDetailsPage = () => {
           </div>
         </div>
       ) : (
-        <>
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-12">
           <div>
             <Image
               src={
@@ -151,7 +151,7 @@ const ProductDetailsPage = () => {
             />
           </div>
           <div className="flex flex-col space-y-4">
-            <h1 className="text-4xl font-bold">
+            <h1 className="text-5xl font-bold">
               {productDetails?.data()?.name}
             </h1>
 
@@ -180,7 +180,7 @@ const ProductDetailsPage = () => {
                   buttonLoading={isButtonLoading}
                 />
 
-                <h2>
+                <h2 className="text-2xl">
                   Auction ending{" "}
                   <span className="font-bold">
                     {dayjs(
@@ -193,11 +193,11 @@ const ProductDetailsPage = () => {
             )}
 
             <div>
-              <h3 className="font-bold text-2xl">Description</h3>
-              <p>{productDetails?.data()?.description}</p>
+              <h3 className="font-bold text-3xl">Description</h3>
+              <p className="text-2xl">{productDetails?.data()?.description}</p>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

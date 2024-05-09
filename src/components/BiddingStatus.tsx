@@ -23,7 +23,7 @@ const BiddingStatus = ({
   return (
     <div
       className={twMerge(
-        "border-2 flex justify-center rounded-lg font-extrabold  ",
+        "border-2 flex justify-center rounded-lg font-extrabold  p-2",
         isAuctionOngoing
           ? "border-green-700 bg-green-200 text-green-700"
           : null,

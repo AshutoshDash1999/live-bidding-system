@@ -25,7 +25,7 @@ const Input: FC<InputProps> = ({
       {label && (
         <label
           htmlFor={id || "custom_input"}
-          className="block mb-2 text-sm font-semibold text-gray-900"
+          className="block mb-2 text-lg font-semibold text-gray-900"
         >
           {label}
         </label>

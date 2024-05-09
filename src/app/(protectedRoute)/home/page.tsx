@@ -1,5 +1,6 @@
 "use client";
 
+import BiddingStatus from "@/components/BiddingStatus";
 import { firestoreDB } from "@/config/firebaseConfig";
 import { collection } from "firebase/firestore";
 import Image from "next/image";
@@ -19,7 +20,7 @@ const Home = () => {
   return (
     <div>
       {productListLoading ? (
-        <div className="animate-pulse grid grid-cols-4 gap-8">
+        <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => {
             return (
               <div
@@ -30,26 +31,34 @@ const Home = () => {
           })}
         </div>
       ) : (
-        <div className=" grid grid-cols-4 gap-8">
-          {productList?.docs.map((doc) => {
+        <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {productList?.docs.map((product) => {
             return (
               <div
-                key={doc?.id}
+                key={product?.id}
                 className="rounded-lg shadow-md cursor-pointer"
-                onClick={() => router.push(`product/${doc?.id}`)}
+                onClick={() => router.push(`product/${product?.id}`)}
               >
                 <Image
-                  src={doc?.data()?.productImageURL}
-                  alt={doc?.data()?.name}
+                  src={product?.data()?.productImageURL}
+                  alt={product?.data()?.name}
                   width={350}
                   height={200}
-                  className="rounded-xl object-cover h-96 w-96"
+                  className="rounded-xl object-cover h-96 w-full"
                 />
-                <div className=" gap-4 p-4">
-                  <h2 className="break-all text-4xl font-semibold">
-                    {doc?.data()?.name}
-                  </h2>
-                  <h3 className="text-xl font-bold">₹ {doc?.data()?.price}</h3>
+                <div className="flex justify-between items-center gap-4 p-4 flex-col sm:flex-row">
+                  <div className="flex flex-row items-center sm:items-start justify-between w-full sm:flex-col">
+                    <h2 className="break-all text-4xl font-semibold">
+                      {product?.data()?.name}
+                    </h2>
+                    <h3 className="text-xl font-bold">
+                      ₹ {product?.data()?.price}
+                    </h3>
+                  </div>
+                  <BiddingStatus
+                    auctionEndingDate={product?.data()?.auctionEndingDateTime}
+                    latestBidder={product?.data()?.bidder}
+                  />
                 </div>
               </div>
             );

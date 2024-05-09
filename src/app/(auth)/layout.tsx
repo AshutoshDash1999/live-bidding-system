@@ -114,14 +114,16 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       <Toaster />
 
       <section className="p-4 md:p-10 h-screen flex justify-center items-center">
-        <div className="shadow-lg p-4 md:p-8 rounded-lg md:w-1/4">
-          <div className="bg-purple-600 p-8 rounded-lg shadow-lg relative -top-16">
-            <h1 className="text-white text-3xl font-semibold text-center">
-              {isSignupScreen ? "Create Account" : "Login"}
-            </h1>
+        <div className="shadow-lg p-4 md:p-8 rounded-lg w-10/12 sm:w-1/3 relative">
+          <div className="absolute w-full left-0 px-4 -top-12">
+            <div className="bg-purple-600 rounded-lg shadow-lg px-4 py-8">
+              <h1 className="text-white text-3xl font-semibold text-center">
+                {isSignupScreen ? "Create Account" : "Login"}
+              </h1>
+            </div>
           </div>
 
-          <div className="">
+          <div className="pt-12">
             <Input
               label="Email"
               name="email"
@@ -150,6 +152,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
               fullWidth
               className="mt-4"
               loading={isButtonLoading}
+              size="lg"
             >
               {isSignupScreen ? "Sign up" : "Login"}
             </Button>
