@@ -48,7 +48,7 @@ const Home = () => {
                 />
                 <div className="flex justify-between items-center gap-4 p-4 flex-col sm:flex-row">
                   <div className="flex flex-row items-center sm:items-start justify-between w-full sm:flex-col">
-                    <h2 className="break-all text-4xl font-semibold">
+                    <h2 className="break-words text-4xl font-semibold">
                       {product?.data()?.name}
                     </h2>
                     <h3 className="text-xl font-bold">

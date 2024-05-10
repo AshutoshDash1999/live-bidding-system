@@ -150,7 +150,7 @@ const ProductDetailsPage = () => {
               className="h-full max-h-96 w-full max-w-2xl rounded-lg object-cover shadow-md"
             />
           </div>
-          <div className="flex flex-col space-y-4">
+          <div className="flex flex-col space-y-4 max-w-md">
             <h1 className="text-5xl font-bold">
               {productDetails?.data()?.name}
             </h1>
