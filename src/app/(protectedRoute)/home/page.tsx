@@ -69,7 +69,7 @@ const Home = () => {
       {/* In case there are no products  */}
       {!productListLoading && productList?.docs.length === 0 ? (
         <h2 className="text-center font-bold text-3xl text-neutral-500">
-          There is no products to show.
+          There are no products to show.
         </h2>
       ) : null}
     </div>
