@@ -33,6 +33,7 @@ interface InputProps {
   buttonText?: string;
   onButtonClick?: () => void;
   buttonLoading?: boolean;
+  showPasswordAction?: boolean;
 }
 
 interface ButtonProps {

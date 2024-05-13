@@ -1,4 +1,5 @@
-import { FC } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { FC, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Button from "./Button";
 
@@ -18,8 +19,15 @@ const Input: FC<InputProps> = ({
   buttonText = "Submit",
   onButtonClick = () => {},
   buttonLoading,
+  showPasswordAction = false,
   ...props
 }) => {
+  const [showPasswordIcon, setshowPasswordIcon] = useState(false);
+
+  const showPasswordHandler = () => {
+    setshowPasswordIcon(!showPasswordIcon);
+  };
+
   return (
     <div className={twMerge("my-2", className)}>
       {label && (
@@ -39,9 +47,9 @@ const Input: FC<InputProps> = ({
         {leftIcon}
 
         <input
-          name={name}
           {...props}
-          type={inputType}
+          name={name}
+          type={showPasswordIcon ? inputType : "text"}
           id={id || "custom_input"}
           className=" text-gray-900 text-md w-full focus:outline-none caret-purple-700 disabled:bg-neutral-200 font-semibold"
           placeholder={placeholder || label}
@@ -52,6 +60,16 @@ const Input: FC<InputProps> = ({
         />
 
         {rightIcon}
+
+        {showPasswordAction ? (
+          <div onClick={showPasswordHandler} className="cursor-pointer">
+            {showPasswordIcon ? (
+              <EyeIcon className="h-6 text-purple-600" />
+            ) : (
+              <EyeSlashIcon className="h-6 text-purple-600" />
+            )}
+          </div>
+        ) : null}
 
         {variant === "input-with-button" ? (
           <Button

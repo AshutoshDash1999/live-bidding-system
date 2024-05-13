@@ -135,6 +135,8 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
               name="password"
               value={userDetails.password}
               onChange={onChangeInputFieldHandler}
+              showPasswordAction
+              inputType="password"
             />
             {isSignupScreen ? (
               <Input
@@ -142,6 +144,8 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                 name="confirmPassword"
                 value={userDetails.confirmPassword}
                 onChange={onChangeInputFieldHandler}
+                showPasswordAction
+                inputType="password"
               />
             ) : null}
 
